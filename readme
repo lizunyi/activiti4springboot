@@ -1,0 +1,8 @@
+activiti流程开发:
+
+内置变量:
+TASK_FLOW_TYPE //流程操作类型,0:添加,1:修改,2:删除,从页面中传值
+TASK_HANDLE_USER //处理人,从session取值
+TASK_BRANCH_CONDITION //默认,是否同意,从页面中传值
+TASK_GLOBAL_CONDITION //全局变量,是否同意,从页面中传值
+TASK_GLOBAL_CREATE_USER //全局变量,创建人,从session取值

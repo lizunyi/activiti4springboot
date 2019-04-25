@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/color.css" />
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/icon.css" />
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/black/easyui.css" />
+<title>业务添加</title>
+<style>
+div{
+margin:30px 0;
+}
+</style>
+</head>
+<body>
+
+	任务id<input id="taskId" type="text"  value="" />
+	业务id<input id="businessId" type="text"  value=""/>
+		
+	<div>
+		请假类型
+		<select id="leaveType">
+			<option value='1'>事假</option>
+			<option value='2'>病假</option>
+		</select>
+	</div>
+	<div>
+		请假开始结束
+		<input id="startDate" type="date"  value="2019-04-19"/>
+	</div>
+	<div>
+		请假结束日期
+		<input id="endDate" type="date" value="2019-04-29"/>
+	</div>
+	<div>
+		事由
+		<textarea id="remark" ></textarea>
+	</div>
+	
+	<div>
+		是否同意
+		<select id="TASK_BRANCH_CONDITION">
+			<option value='1'>同意</option>
+			<option value='2'>驳回</option>
+		</select>
+	</div>
+	<div>
+		<input id="modifyUserId" type="text" />
+		 <input type="button" value="提交" id="save"/>
+	</div>
+	<script type="text/javascript" src="/jquery-easyui-1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+	<script>
+		$(function() {
+			$("#save").click(function(){
+				$.ajax({
+					url:'/leave/addApprove/'+ $("#taskId").val(),
+					type:'post',
+					data:{
+						id: $("#businessId").val() ,
+						leaveType: $("#leaveType").val(),
+						startDate:$("#startDate").val(),
+						endDate:$("#endDate").val(),
+						remark:$("#remark").val(),
+						modifyUserId:$("#modifyUserId").val(),
+						TASK_HANDLE_USER:$("#modifyUserId").val(),
+						TASK_BRANCH_CONDITION:$("#TASK_BRANCH_CONDITION").val(),
+						TASK_FLOW_TYPE:"0"
+					},
+					success:function(data){
+						alert(data);
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>

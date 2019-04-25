@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/color.css" />
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/icon.css" />
+<link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/black/easyui.css" />
+<title>流程-已申请</title>
+</head>
+<body>
+	<div id="list"></div>
+	<script type="text/javascript" src="/jquery-easyui-1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+
+	<script>
+		$(function() {
+			var search = decodeURI(window.location.search).split(/[=&]/);
+			var userId = search[1];
+			$("#list").datagrid({
+				url:'/leave/query/apply/'+userId,
+				fitColumns:true,
+				columns : [[{
+					title:"任务ID",
+					field : 'id',
+					width : 80
+				}, {
+					title:"任务名称",
+					field : 'task_name',
+					width : 100
+				}, {
+					title:"申请人",
+					field : 'apply_user',
+					width : 80
+				}, {
+					title:"办理人",
+					field : 'handle_user',
+					width : 80
+				}, {
+					title:"申请时间",
+					field : 'create_time',
+					width : 80
+				}]]
+			});
+		});
+	</script>
+</body>
+</html>
