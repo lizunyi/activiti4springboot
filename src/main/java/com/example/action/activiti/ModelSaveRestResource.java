@@ -62,53 +62,46 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void saveModel(@PathVariable String modelId, @RequestBody MultiValueMap<String, String> values) {
 		try {
-
 			Model model = repositoryService.getModel(modelId);
 			String oldDeploymentId = model.getDeploymentId();
-			
 			ObjectNode modelJson = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
-
 			modelJson.put(MODEL_NAME, values.getFirst("name"));
 			modelJson.put(MODEL_DESCRIPTION, values.getFirst("description"));
 			model.setMetaInfo(modelJson.toString());
 			model.setName(values.getFirst("name"));
-
 			repositoryService.saveModel(model);
-
 			repositoryService.addModelEditorSource(model.getId(), values.getFirst("json_xml").getBytes("utf-8"));
-
 			InputStream svgStream = new ByteArrayInputStream(values.getFirst("svg_xml").getBytes("utf-8"));
 			TranscoderInput input = new TranscoderInput(svgStream);
-
 			PNGTranscoder transcoder = new PNGTranscoder();
 			// Setup output
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			TranscoderOutput output = new TranscoderOutput(outStream);
-
 			// Do the transformation
 			transcoder.transcode(input, output);
 			final byte[] result = outStream.toByteArray();
 			repositoryService.addModelEditorSourceExtra(model.getId(), result);
 			outStream.close();
-
+			
 			//部署
 			ObjectNode modelNode = (ObjectNode) new ObjectMapper()
 					.readTree(repositoryService.getModelEditorSource(modelId));
 			byte[] bpmnBytes = null;
-
 			BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
 			bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
 			String processName = model.getName() + ".bpmn20.xml";
-			Deployment deployment = repositoryService.createDeployment().name(model.getName())
-					.addString(processName, new String(bpmnBytes)).deploy();
-			
+			Deployment deployment = repositoryService
+					.createDeployment()
+					.name(model.getName())
+					.addString(processName,  new String(bpmnBytes,"utf-8"))
+			.deploy();
+			//同步model属性,并且删除旧的部署数据
+			model = repositoryService.getModel(modelId);
 			model.setDeploymentId(deployment.getId());
 			repositoryService.saveModel(model);
-
 			if(StringUtils.isNotNull(oldDeploymentId)) {
 				repositoryService.deleteDeployment(oldDeploymentId, true);
 			}
-			System.out.println(deployment.getId());
 		} catch (Exception e) {
 			LOGGER.error("Error saving model", e);
 			throw new ActivitiException("Error saving model", e);
