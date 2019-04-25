@@ -11,14 +11,18 @@ import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -36,6 +40,8 @@ public class ModelRestResource {
 
 	@Resource
 	private RepositoryService repositoryService;
+	@Autowired
+	private HistoryService historyService;
 
 	@RequestMapping(value = "create")
 	public void create(@RequestParam("name") String name, @RequestParam("key") String key,
@@ -62,7 +68,6 @@ public class ModelRestResource {
 
 			repositoryService.saveModel(modelData);
 			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
-
 			response.sendRedirect(request.getContextPath() + "/modeler.html?modelId=" + modelData.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,6 +94,20 @@ public class ModelRestResource {
 			e.printStackTrace();
 		}
 		return "Ok";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/delete/deploy/{modelId}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void deleteDeploy(@PathVariable("modelId") String modelId, RedirectAttributes redirectAttributes) {
+		try {
+			Model modelData = repositoryService.getModel(modelId);
+			if(StringUtils.isNotNull(modelData.getDeploymentId())) {
+				repositoryService.deleteDeployment(modelData.getDeploymentId(), true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

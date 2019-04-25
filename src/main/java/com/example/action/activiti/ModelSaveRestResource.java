@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.utils.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -63,7 +64,8 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 		try {
 
 			Model model = repositoryService.getModel(modelId);
-
+			String oldDeploymentId = model.getDeploymentId();
+			
 			ObjectNode modelJson = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
 
 			modelJson.put(MODEL_NAME, values.getFirst("name"));
@@ -99,6 +101,13 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 			String processName = model.getName() + ".bpmn20.xml";
 			Deployment deployment = repositoryService.createDeployment().name(model.getName())
 					.addString(processName, new String(bpmnBytes)).deploy();
+			
+			model.setDeploymentId(deployment.getId());
+			repositoryService.saveModel(model);
+
+			if(StringUtils.isNotNull(oldDeploymentId)) {
+				repositoryService.deleteDeployment(oldDeploymentId, true);
+			}
 			System.out.println(deployment.getId());
 		} catch (Exception e) {
 			LOGGER.error("Error saving model", e);
