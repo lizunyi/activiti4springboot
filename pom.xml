@@ -19,7 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<activiti.version>5.22.0</activiti.version>
+		<activiti.version>6.0.0</activiti.version>
 	</properties>
 
 	<dependencies>
@@ -71,11 +71,11 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 		<!-- thymeleaf -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework.boot</groupId> -->
-<!-- 			<artifactId>spring-boot-starter-thymeleaf</artifactId> -->
-<!-- 		</dependency> -->
-		<!-- activiti -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.boot</groupId> -->
+		<!-- <artifactId>spring-boot-starter-thymeleaf</artifactId> -->
+		<!-- </dependency> -->
+		<!-- activiti 工作流所需包 -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
@@ -83,29 +83,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
-			<artifactId>activiti-modeler</artifactId>
+			<artifactId>activiti-json-converter</artifactId>
 			<version>${activiti.version}</version>
-			<exclusion>
-				<artifactId>spring-security-config</artifactId>
-				<groupId>org.springframework.security</groupId>
-			</exclusion>
-			<exclusion>
-				<artifactId>spring-security-core</artifactId>
-				<groupId>org.springframework.security</groupId>
-			</exclusion>
-			<exclusion>
-				<artifactId>spring-security-crypto</artifactId>
-				<groupId>org.springframework.security</groupId>
-			</exclusion>
-			<exclusion>
-				<artifactId>spring-security-web</artifactId>
-				<groupId>org.springframework.security</groupId>
-			</exclusion>
 		</dependency>
 		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-diagram-rest</artifactId>
-			<version>${activiti.version}</version>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-transcoder</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-codec</artifactId>
+			<version>1.7</version>
 		</dependency>
 		<!-- 热部署 -->
 		<dependency>
