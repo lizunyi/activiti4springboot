@@ -156,29 +156,20 @@ public class LeavApplyServiceImpl implements LeavApplyService {
 
 	/***
 	 * 查询我处理过的任务
-	 * TODO: 这个处理存在问题.可解决方案有:
-	 * 1.利用原生api查询,自己组织sql
-	 * 2.利用 act_hi_taskinst 的 ASSIGNEE_ 查询
-	 * 注意:
-	 * 利用taskVariableValueEquals 与 taskVariableValueNotEquals 结合的查询存在一定的权限关系.后续再研究
 	 */
 	@Override
 	public List<HistoricTaskInstance> queryDone(String userId) throws Exception {
 		return historyService.createHistoricTaskInstanceQuery()
-				.taskVariableValueEquals("TASK_HANDLE_USER", userId)
-				.taskVariableValueNotEquals("TASK_GLOBAL_CREATE_USER", userId)
+				.taskAssignee(userId)
 				.list();
 	}
 
 	/***
 	 * 查询我申请的任务
-	 * TODO: 这个处理存在问题.可解决方案有:
-	 * 1.利用原生api查询,自己组织sql
 	 */
 	@Override
 	public List<HistoricTaskInstance> queryApply(String userId) throws Exception {
-		return historyService.createHistoricTaskInstanceQuery()
-				.taskOwner(userId)
+		return historyService.createNativeHistoricTaskInstanceQuery().sql("select * from act_hi_taskinst where OWNER_ = '"+userId+"' and PARENT_TASK_ID_ IS NULL ")
 				.list();
 	}
 }

@@ -102,7 +102,7 @@ public class ActivitiAction {
 					HistoricTaskInstance task = tasks.get(i);
 					o.put("id", task.getId());
 					o.put("apply_user", task.getOwner());
-					o.put("handle_user", task.getTaskLocalVariables().get("modifyUserId"));
+					o.put("handle_user", task.getAssignee());
 					o.put("create_time", sdf.format(task.getCreateTime()));
 					o.put("task_name", task.getName());
 					array.add(o);
@@ -131,7 +131,7 @@ public class ActivitiAction {
 					HistoricTaskInstance task = tasks.get(i);
 					o.put("id", task.getId());
 					o.put("apply_user", task.getOwner());
-					o.put("handle_user", task.getTaskLocalVariables().get("modifyUserId"));
+					o.put("handle_user", task.getAssignee());
 					o.put("create_time", sdf.format(task.getCreateTime()));
 					o.put("task_name", task.getName());
 					array.add(o);
