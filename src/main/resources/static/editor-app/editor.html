@@ -26,7 +26,7 @@
   </div>
   <div class="full">
       <div class="row row-no-gutter">
-	      <div id="paletteHelpWrapper" class="col-xs-3">
+	      <div id="paletteHelpWrapper" class="col-xs-2" style="padding:0">
 	      	<div class="stencils" id="paletteSection">
 			    <div ng-if="stencilItemGroups.length > 1">
                     <div ng-repeat="group in stencilItemGroups">
@@ -56,8 +56,9 @@
 			     </div>
 		      </div>
 	      </div>
-	      <div id="canvasHelpWrapper" class="col-xs-9">
+	      <div id="canvasHelpWrapper" class="col-xs-10" style="padding:0">
 	      	<div class="canvas-wrapper" id="canvasSection" 
+	      		style="margin-right:15px;"
 	      		ng-model="droppedElement"
                   ng-model="droppedElement"
                   data-drop="true"
@@ -92,7 +93,8 @@
 	             </div>
 	         </div>
            </div>
-           <div id="propertiesHelpWrapper" class="col-xs-9">
+         </div>
+         <div id="propertiesHelpWrapper" class="col-xs-12" style="padding:0">
             	<div class="propertySection" id="propertySection"
                 	ng-class="{collapsed: propertyWindowState.collapsed}">
 	                <div class="selected-item-section">
@@ -131,6 +133,5 @@
 	    			</div>     
     			</div>            
             </div>
-         </div>
     </div>
 </div>

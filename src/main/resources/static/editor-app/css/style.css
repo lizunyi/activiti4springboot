@@ -39,7 +39,7 @@
 }
 
 .editor-toolbar > .btn-group {
-	margin: 12px 15px 0px 0px;
+	margin: 0px 15px 0px 5px;
 }
 
 .editor-toolbar  > .btn-group.pull-right {
@@ -47,7 +47,7 @@
 }
 
 .editor-toolbar .btn.btn-inverse {
-	font-size: 24px;
+	font-size: 15px;
 	color: #FFFFFF;
     border-color: rgba(0, 0, 0, 0);
     padding: 3px 6px 0px 6px;
@@ -56,8 +56,8 @@
     text-align: center;
     border: none;
     margin: 0px 0px 0px 5px;
-    height: 36px;
-    min-width: 36px;
+/*     height: 36px; */
+/*     min-width: 36px; */
 }
 .editor-toolbar .btn.btn-inverse.pressed {
 	background-color: #287d92;
@@ -83,7 +83,7 @@
 }
 
 .stencils {
-	border-right: 1pt solid #c7cacd;
+	border-right: 1pt solid #EBEBEB;
 	overflow: auto;
 	z-index: 5000;
 }
@@ -170,7 +170,7 @@
 -------------------------------- */
 div.canvas-wrapper {
 	overflow: auto;
-	background-color: #F8F8F8;
+/* 	background-color: #F8F8F8; */
 }
 
 .canvas_resize_indicator i {
@@ -224,15 +224,16 @@ div.canvas-wrapper {
 
 div.propertySection {
 	height: 250px;
-    background-color: #e8edf1;
+/*     background-color: #e8edf1; */
 	margin-bottom: 0px;
+	border-top:1px solid #EBEBEB;
 }
 
 .selected-item-title {
-    font-size: 25px;
+    font-size: 15px;
     font-weight: bold;
-    padding: 8px 0 8px 8px;
-    border-bottom: 1px solid #a4acb9;
+    padding: 5px 0 5px 5px;
+    border-bottom: 1px solid #EBEBEB;
     cursor: pointer;
 }
 
@@ -259,16 +260,19 @@ div.propertySection {
 
 .selected-item-body .property-row {
 	float: left;
-	width: 50%;
+	width: 20%;
 	border: 0;
 	margin: 0;
 	padding: 0;
 	font-size: 13px;
 	overflow: hidden;
+	height:30px;
+	line-height:30px;
 }
 
 .selected-item-body .property-row:hover {
-	background-color: #d7dfe6;	
+	background-color: #d3d2d2;
+/* 	color:#fff; */
 }
 
 .selected-item-body {
@@ -285,14 +289,14 @@ div.propertySection {
 .property-row > span {
 	display: block;
 	float: left;
-	margin: 2px 2%;
+	margin: 0px 2%;
 	padding: 0;	
 	min-height: 25px;
 }
 
 .property-row span.value {
 	cursor: pointer;
-	width: 46%;
+/* 	width: 46%; */
 	padding: 0;
 	margin: 0;
 }
@@ -303,8 +307,9 @@ div.propertySection {
 
 .property-row span.title {
 	font-size: 13px;
-	font-weight: bold;
-	width: 46%;
+/* 	font-weight: bold; */
+/* 	color:#111; */
+/* 	width: 46%; */
 }
 
 .property-row span.title-removed {

@@ -240,7 +240,7 @@ activitiModeler
 
 	                    var totalAvailable = jQuery(window).height() - offset.top - mainHeader.height() - 21;
 	                    canvas.height(totalAvailable - propSectionHeight);
-	                    jQuery('#paletteSection').height(totalAvailable);
+	                    jQuery('#paletteSection').height(totalAvailable - propSectionHeight);
 
 	                    // Update positions of the resize-markers, according to the canvas
 

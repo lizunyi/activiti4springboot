@@ -48,6 +48,10 @@ public class ModelRestResource {
 			@RequestParam(name="description",required=false) String description, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		try {
+			Long cnt = repositoryService.createNativeModelQuery().sql("select count(1) from act_re_model where key_ = '"+key+"' or name_ = '"+name+"'").count();
+			if(cnt > 0) {
+				throw new Exception("该key或name已经存在!");
+			}
 			ObjectMapper objectMapper = new ObjectMapper();
 			ObjectNode editorNode = objectMapper.createObjectNode();
 			editorNode.put("id", "canvas");
