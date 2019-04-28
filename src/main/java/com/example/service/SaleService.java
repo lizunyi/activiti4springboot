@@ -1,4 +1,4 @@
-package com.example.service.business;
+package com.example.service;
 
 import com.example.service.activiti.BusinessService;
 

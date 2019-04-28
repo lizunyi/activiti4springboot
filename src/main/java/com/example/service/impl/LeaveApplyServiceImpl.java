@@ -1,4 +1,4 @@
-package com.example.service.business.impl;
+package com.example.service.impl;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.mapper.LeaveApplyMapper;
 import com.example.model.LeaveApply;
-import com.example.service.business.LeaveApplyService;
+import com.example.service.LeaveApplyService;
 import com.example.utils.StringUtils;
 
 @Transactional
