@@ -1,8 +1,23 @@
 activiti流程开发:
 
 内置变量:
-TASK_FLOW_TYPE //流程操作类型,0:添加,1:修改,2:删除,从页面中传值
-TASK_HANDLE_USER //处理人,从session取值
-TASK_BRANCH_CONDITION //默认,是否同意,从页面中传值
-TASK_GLOBAL_CONDITION //全局变量,是否同意,从页面中传值
+TASK_FLOW_TYPE              //流程操作类型,0:添加,1:修改,2:删除;从页面中传值;
+TASK_BRANCH_CONDITION      //是否同意,默认1:同意;从页面中传值;
+TASK_FORM_KEY    	      //表单/Service 标识;从页面中传值;
+TASK_HANDLE_USER         //处理人,从session取值
 TASK_GLOBAL_CREATE_USER //全局变量,创建人,从session取值
+
+流程创建
+/service/create?name=[流程名称]&key=[流程标识]
+流程修改
+/modeler.html?modelId=[流程id]
+添加业务
+/leave_apply/apply.html
+查询待办
+/leave_apply/query_deal.html?userId=[userId]
+流程办理
+/leave_apply/approve.html
+查询已办
+/leave_apply/query_done.html?userId=[userId]
+查询已申请
+/leave_apply/query_apply.html?userId=[userId]
