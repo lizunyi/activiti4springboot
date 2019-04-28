@@ -11,12 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-/**
- * 数据源配置
- * 
- * @author mengxiangyun
- *
- */
+
 @Configuration
 public class DataSourceConfig {
 

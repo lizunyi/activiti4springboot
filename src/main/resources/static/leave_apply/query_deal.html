@@ -17,7 +17,7 @@
 			var search = window.location.search;
 			var roleName = decodeURI(search.split('=').pop());
 			$("#list").datagrid({
-				url:'/leave/query/deal/'+roleName,
+				url:'/workflow/query/deal/'+roleName,
 				fitColumns:true,
 				columns : [[{
 					title:"任务ID",

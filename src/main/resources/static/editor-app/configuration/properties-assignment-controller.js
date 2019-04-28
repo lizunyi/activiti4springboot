@@ -34,14 +34,14 @@ var KisBpmAssignmentCtrl = [ '$scope', '$modal', function($scope, $modal) {
 
 var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
 	jQuery.ajax({
-		url: '/leave/query/users',
+		url: '/workflow/query/users',
 		async:false,
 		success:function(data){
 			$scope.users = data;
 		}
 	});
 	jQuery.ajax({
-		url: '/leave/query/roles',
+		url: '/workflow/query/roles',
 		async:false,
 		success:function(data){
 			$scope.roles = data;

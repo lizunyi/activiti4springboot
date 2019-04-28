@@ -15,35 +15,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.mapper.DemoMapper;
 import com.example.mapper.RoleMapper;
 import com.example.mapper.UserMapper;
 import com.example.model.Role;
 import com.example.model.User;
-import com.example.service.LeavApplyService;
+import com.example.service.WorkFlowService;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
-@RequestMapping("/leave")
-public class ActivitiAction {
+@RequestMapping("/workflow")
+public class WorkFlowAction {
 
 	@Resource
-	private DemoMapper demoMapper;
-
-	@Resource
-	private LeavApplyService leavApplyService;
+	private WorkFlowService workFlowService;
 	@Resource
 	private UserMapper userMapper;
 	@Resource
 	private RoleMapper roleMapper;
 
 	@ResponseBody
-	@RequestMapping("/add")
-	public String add(HttpServletRequest request, @RequestParam Map<String,Object> apply) {
+	@RequestMapping("/apply")
+	public String apply(HttpServletRequest request, @RequestParam Map<String,Object> apply) {
 		try {
-			leavApplyService.add(apply);
+			workFlowService.apply(apply);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,10 +47,10 @@ public class ActivitiAction {
 	}
 
 	@ResponseBody
-	@RequestMapping("/addApprove/{taksId}")
-	public String addApprove(HttpServletRequest request,@PathVariable String taksId, @RequestParam Map<String,Object> apply) {
+	@RequestMapping("/approve/{taksId}")
+	public String approve(HttpServletRequest request,@PathVariable String taksId, @RequestParam Map<String,Object> apply) {
 		try {
-			leavApplyService.addApprove(apply,taksId);
+			workFlowService.approve(apply,taksId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,7 +62,7 @@ public class ActivitiAction {
 	public JSONObject queryDeal(HttpServletRequest request,@PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			List<Task> tasks = leavApplyService.queryDeal(userId);
+			List<Task> tasks = workFlowService.queryDeal(userId);
 			JSONArray array  = new JSONArray();
 			if(tasks !=null) {
 				for (int i = 0; i < tasks.size(); i++) {
@@ -94,7 +90,7 @@ public class ActivitiAction {
 	public JSONObject queryDone(HttpServletRequest request,@PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			List<HistoricTaskInstance> tasks = leavApplyService.queryDone(userId);
+			List<HistoricTaskInstance> tasks = workFlowService.queryDone(userId);
 			JSONArray array  = new JSONArray();
 			if(tasks !=null) {
 				for (int i = 0; i < tasks.size(); i++) {
@@ -123,7 +119,7 @@ public class ActivitiAction {
 	public JSONObject queryApply(HttpServletRequest request,@PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			List<HistoricTaskInstance> tasks = leavApplyService.queryApply(userId);
+			List<HistoricTaskInstance> tasks = workFlowService.queryApply(userId);
 			JSONArray array  = new JSONArray();
 			if(tasks !=null) {
 				for (int i = 0; i < tasks.size(); i++) {

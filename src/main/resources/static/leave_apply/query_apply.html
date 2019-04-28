@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/color.css" />
 <link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/icon.css" />
 <link rel="stylesheet" href="/jquery-easyui-1.7.0/themes/black/easyui.css" />
-<title>流程-已办</title>
+<title>流程-已申请</title>
 </head>
 <body>
 	<div id="list"></div>
@@ -17,7 +17,7 @@
 			var search = decodeURI(window.location.search).split(/[=&]/);
 			var userId = search[1];
 			$("#list").datagrid({
-				url:'/leave/query/done/'+userId,
+				url:'/workflow/query/apply/'+userId,
 				fitColumns:true,
 				columns : [[{
 					title:"任务ID",

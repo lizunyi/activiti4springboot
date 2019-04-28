@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Table(name = "leave_apply")
-public class LeaveApply extends BaseFlow{
+public class LeaveApply {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,6 +25,8 @@ public class LeaveApply extends BaseFlow{
 	private Long formrecid;
 	@Column(name = "create_id")
 	private Long createId;
+	@Column(name = "modify_id")
+	private Long modifyId;
 
 	public Long getId() {
 		return id;
@@ -88,6 +90,14 @@ public class LeaveApply extends BaseFlow{
 
 	public void setCreateId(Long createId) {
 		this.createId = createId;
+	}
+
+	public Long getModifyId() {
+		return modifyId;
+	}
+
+	public void setModifyId(Long modifyId) {
+		this.modifyId = modifyId;
 	}
 
 }
