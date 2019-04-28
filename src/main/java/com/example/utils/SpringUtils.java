@@ -1,7 +1,3 @@
-/** 
- *      
- * 
- */
 package com.example.utils;
 
 import org.springframework.beans.BeansException;

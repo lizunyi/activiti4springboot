@@ -6,6 +6,16 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 
+/***
+ * 工作流Service
+ * :申请
+ * :审核
+ * :查询待办
+ * :查询已办
+ * :查询已申请
+ * @author saps.weaver
+ *
+ */
 public interface WorkFlowService {
 
 	void apply(Map<String, Object> apply) throws Exception;

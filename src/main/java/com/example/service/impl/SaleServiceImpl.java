@@ -11,7 +11,7 @@ import com.example.mapper.LeaveApplyMapper;
 import com.example.service.SaleService;
 
 @Transactional
-@Service("sale")
+@Service("business.sale")
 public class SaleServiceImpl implements SaleService {
 
 	@Resource
@@ -23,7 +23,7 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public void addCallback(int TASK_FLOW_TYPE,long instanceId,long id) throws Exception {
+	public void applyCallback(int TASK_FLOW_TYPE,long instanceId,long id) throws Exception {
 		System.out.println("回调");
 	}
  

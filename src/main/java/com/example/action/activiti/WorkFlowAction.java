@@ -24,6 +24,11 @@ import com.example.service.activiti.WorkFlowService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/***
+ * 流程公共处理入口
+ * @author saps.weaver
+ *
+ */
 @Controller
 @RequestMapping("/workflow")
 public class WorkFlowAction {
