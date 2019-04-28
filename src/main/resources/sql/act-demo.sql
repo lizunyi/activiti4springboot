@@ -28,6 +28,7 @@ CREATE TABLE `leave_apply` (
   `status` int(1) DEFAULT NULL COMMENT '流程状态',
   `formrecid` int(11) DEFAULT NULL COMMENT '表单数据id',
   `create_id` int(11) DEFAULT NULL COMMENT '申请人',
+  `modify_Id` int(11) DEFAULT NULL COMMENT '最后修改人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
 

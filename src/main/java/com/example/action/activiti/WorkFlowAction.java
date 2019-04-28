@@ -1,4 +1,4 @@
-package com.example.action;
+package com.example.action.activiti;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,7 +19,7 @@ import com.example.mapper.RoleMapper;
 import com.example.mapper.UserMapper;
 import com.example.model.Role;
 import com.example.model.User;
-import com.example.service.WorkFlowService;
+import com.example.service.activiti.WorkFlowService;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

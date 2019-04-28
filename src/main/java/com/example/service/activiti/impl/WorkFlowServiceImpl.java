@@ -1,4 +1,4 @@
-package com.example.service.impl;
+package com.example.service.activiti.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.mapper.UserMapper;
 import com.example.model.User;
-import com.example.service.BusinessService;
-import com.example.service.WorkFlowService;
+import com.example.service.activiti.BusinessService;
+import com.example.service.activiti.WorkFlowService;
 import com.example.utils.SpringUtils;
 import com.example.utils.StringUtils;
 
