@@ -107,7 +107,7 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
     
     $scope.userselect = function(o){
     	$scope.assignment.assignee = "USER(" + o.username + ")";
-    	$scope.usersingle = false;
+    	$scope.assignment.show = false;
     };
     $scope.mutil_userselect = function(index,o){
     	$scope.assignment.candidateUsers[index].value = "USER(" + o.username + ")";

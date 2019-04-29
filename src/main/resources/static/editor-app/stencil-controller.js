@@ -691,12 +691,15 @@ angular.module('activitiModeler')
             //lizunyi 添加跳转条件逻辑 
             if("oryx-usertaskassignment" == key){
             	var $assignee = property.value.assignment.assignee;
+            	var $msg = [];
             	if($assignee){
-            		shape.properties["oryx-name"] = $assignee;
+            		$msg.push($assignee);
+            		property.value.assignment.candidateUsers = [];
+            		property.value.assignment.candidateGroups = [];
             	}else{
                 	var $candidateUsers = property.value.assignment.candidateUsers;
                 	var $candidateGroups = property.value.assignment.candidateGroups;
-                	var $msg = [];
+                	
             		if($candidateUsers){
             			for(var $x = 0; $x < $candidateUsers.length;$x++){
                 			$msg.push($candidateUsers[$x]["value"]);
@@ -707,19 +710,21 @@ angular.module('activitiModeler')
                 			$msg.push($candidateGroups[$x]["value"]);
             			}
             		}
-            		if($msg.length > 0){
-	            		if($msg.length == 1){
-	                		shape.properties["oryx-name"] = $msg[0];
-	            		}else{
-	                		shape.properties["oryx-name"] = "多候选";
-	            		}
-            		}
             	}
-            	shape.propertiesChanged["oryx-name"] = true;            	
+            	if($msg.length > 0){
+            		if($msg.length == 1){
+                		shape.properties["oryx-name"] = $msg[0];
+            		}else{
+                		shape.properties["oryx-name"] = "多候选";
+            		}
+        		}else{
+            		shape.properties["oryx-name"] = "";
+        		}
+            	shape.propertiesChanged["oryx-name"] = true;
             	var $props = $scope.selectedItem.properties;
             	for(var $x = 0 ;$x < $props.length;$x++){
         			if("oryx-name" == $props[$x]["key"]){
-        				$props[$x]["value"] = property.value.assignment.assignee;
+        				$props[$x]["value"] = shape.properties["oryx-name"];
         				break;
         			}
         		}

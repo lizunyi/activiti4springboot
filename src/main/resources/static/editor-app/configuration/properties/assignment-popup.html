@@ -29,8 +29,8 @@
             	<div class="row row-no-gutter">
             		<div class="form-group">
             			<label for="assigneeField">{{'PROPERTY.ASSIGNMENT.ASSIGNEE' | translate}}</label>
-            			<input type="text" id="assigneeField" class="form-control" ng-focus="usersingle=true" ng-model="assignment.assignee" placeholder="{{'PROPERTY.ASSIGNMENT.ASSIGNEE_PLACEHOLDER' | translate}}" />
-            			<ul class="select-user" ng-if="usersingle">
+            			<input type="text" autocomplete="off" id="assigneeField" class="form-control" ng-click="assignment.show=true" ng-model="assignment.assignee" placeholder="{{'PROPERTY.ASSIGNMENT.ASSIGNEE_PLACEHOLDER' | translate}}" />
+            			<ul class="select-user" ng-if="assignment.show" ng-mouseleave="assignment.show=false" >
             				<li ng-repeat="user in users"><A ng-click="userselect(user)">{{user.username}}</A></li>
             			</ul>
             		</div>
@@ -40,8 +40,8 @@
                     <div class="form-group">
                     	<label for="userField">{{'PROPERTY.ASSIGNMENT.CANDIDATE_USERS' | translate}}</label>
                         <div ng-repeat="candidateUser in assignment.candidateUsers">
-            	            <input id="userField" class="form-control" ng-bind="elIndex=$index" ng-focus="usermutil(candidateUser)" type="text" ng-model="candidateUser.value" />
-	            			<ul class="select-user" ng-if="candidateUser.show">
+            	            <input id="userField" autocomplete="off" class="form-control" ng-bind="elIndex=$index" ng-click="usermutil(candidateUser)" type="text" ng-model="candidateUser.value" />
+	            			<ul class="select-user" ng-if="candidateUser.show" ng-mouseleave="candidateUser.show=false">
 	            				<li ng-repeat="user in users"><A ng-click="mutil_userselect(elIndex, user)">{{user.username}}</A></li>
 	            			</ul>
             	            <i class="glyphicon glyphicon-minus clickable-property" ng-click="removeCandidateUserValue($index)"></i>
@@ -52,8 +52,8 @@
                     <div class="form-group">
                     	<label for="groupField">{{'PROPERTY.ASSIGNMENT.CANDIDATE_GROUPS' | translate}}</label>
                         <div ng-repeat="candidateGroup in assignment.candidateGroups">
-            	          	<input id="groupField" class="form-control" type="text" ng-bind="elIndex=$index" ng-focus="usermutil(candidateGroup)"  ng-model="candidateGroup.value" />
-            	          	<ul class="select-user" ng-if="candidateGroup.show" >
+            	          	<input id="groupField" autocomplete="off" class="form-control" type="text" ng-bind="elIndex=$index" ng-click="usermutil(candidateGroup)"  ng-model="candidateGroup.value" />
+            	          	<ul class="select-user" ng-if="candidateGroup.show" ng-mouseleave="candidateGroup.show=false">
 	            				<li ng-repeat="role in roles"><A ng-click="mutil_groupselect(elIndex,role)">{{role.rolename}}</A></li>
 	            			</ul>
             	          	<i class="glyphicon glyphicon-minus clickable-property" ng-click="removeCandidateGroupValue($index)"></i>
