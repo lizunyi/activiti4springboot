@@ -483,7 +483,7 @@
       "title" : "默认跳线",
       "value" : "false",
       "description" : "定义默认为顺序跳转",
-      "popular" : true,
+      "popular" : false,
       "refToView" : "default"
     } ]
   }, {

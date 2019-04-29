@@ -373,8 +373,8 @@ angular.module('activitiModeler')
 	                            		currentProperty.agree = true;
 	                            		currentProperty.reject = false;
 	                            		var childs = $scope.modelData.model.childShapes;
-	                            		for(var i in childs){
-	                            			var o = childs[i];
+	                            		for(var $x in childs){
+	                            			var o = childs[$x];
 	                            			if(o.properties.hasOwnProperty("agree") && o.resourceId == selectedShape.resourceId){
 	                            				currentProperty.agree = o.properties.agree;
 	                            				currentProperty.reject = o.properties.reject;
@@ -644,12 +644,12 @@ angular.module('activitiModeler')
         $scope.propertyClicked = function (index) {
         	//lizunyi 添加逻辑判断
     		var $props = $scope.selectedItem.properties;
-    		for(var i in $props){
-    			if("oryx-process_id" == $props[i]["key"]){
+    		for(var $x in $props){
+    			if("oryx-process_id" == $props[$x]["key"]){
     				return;
     			}
-    			if(i == index){
-        			if("oryx-overrideid" == $props[i]["key"]){
+    			if($x == index){
+        			if("oryx-overrideid" == $props[$x]["key"]){
         				return;
         			}
     			}
@@ -702,13 +702,13 @@ angular.module('activitiModeler')
                 	var $candidateGroups = property.value.assignment.candidateGroups;
                 	var $msg = [];
             		if($candidateUsers){
-            			for(var i = 0; i < $candidateUsers.length;i++){
-                			$msg.push($candidateUsers[i]["value"]);
+            			for(var $x = 0; $x < $candidateUsers.length;$x++){
+                			$msg.push($candidateUsers[$x]["value"]);
             			}
             		}
             		if($candidateGroups){
-            			for(var i = 0; i < $candidateGroups.length;i++){
-                			$msg.push($candidateGroups[i]["value"]);
+            			for(var $x = 0; $x < $candidateGroups.length;$x++){
+                			$msg.push($candidateGroups[$x]["value"]);
             			}
             		}
             		if($msg.length > 0){
@@ -722,9 +722,9 @@ angular.module('activitiModeler')
             	shape.propertiesChanged["oryx-name"] = true;            	
             	var $props = $scope.selectedItem.properties;
             	try{
-            		for(var i in $props){
-            			if("oryx-name" == $props[i]["key"]){
-            				$props[i]["value"] = property.value.assignment.assignee;
+            		for(var $x in $props){
+            			if("oryx-name" == $props[$x]["key"]){
+            				$props[$x]["value"] = property.value.assignment.assignee;
             				break;
             			}
             		}
