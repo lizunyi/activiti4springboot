@@ -40,6 +40,7 @@ margin:30px 0;
 	<div>
 		是否同意
 		<select id="TASK_BRANCH_CONDITION">
+			<option value='0'>--请选择--</option>
 			<option value='1'>同意</option>
 			<option value='2'>驳回</option>
 		</select>
@@ -64,7 +65,7 @@ margin:30px 0;
 						remark:$("#remark").val(),
 						TASK_HANDLE_USER:$("#modifyId").val(),
 						TASK_BRANCH_CONDITION:$("#TASK_BRANCH_CONDITION").val(),
-						TASK_FORM_KEY: "business.leave",
+						TASK_GLOBAL_FORM_KEY: "business.leave",
 						TASK_FLOW_TYPE:"0"
 					},
 					success:function(data){

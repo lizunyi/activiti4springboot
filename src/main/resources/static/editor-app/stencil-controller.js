@@ -364,26 +364,22 @@ angular.module('activitiModeler')
                                 }
                             }
                             //lizunyi 添加跳转条件逻辑
-                            if (currentProperty.type === 'boolean-array'){
+                            if (!selectedShape.properties["oryx-user-conditionsequenceflow"] && currentProperty.type === 'boolean-array'){
                             	if(selectedShape.properties.hasOwnProperty("oryx-agree")){
                             		currentProperty.agree =  selectedShape.properties["oryx-agree"];
                             		currentProperty.reject = selectedShape.properties["oryx-reject"];
                             	}else{
-	                            	try{
-	                            		currentProperty.agree = true;
-	                            		currentProperty.reject = false;
-	                            		var childs = $scope.modelData.model.childShapes;
-	                            		for(var $x in childs){
-	                            			var o = childs[$x];
-	                            			if(o.properties.hasOwnProperty("agree") && o.resourceId == selectedShape.resourceId){
-	                            				currentProperty.agree = o.properties.agree;
-	                            				currentProperty.reject = o.properties.reject;
-	                            				break;
-	                            			}
-	                            		}
-	                            	}catch(err){
-	                            		
-	                            	}
+                            		currentProperty.agree = true;
+                            		currentProperty.reject = false;
+                            		var childs = $scope.modelData.model.childShapes;
+                            		for(var $x = 0; $x < childs.length;$x++){
+                            			var o = childs[$x];
+                            			if(o.properties.hasOwnProperty("agree") && o.resourceId == selectedShape.resourceId){
+                            				currentProperty.agree = o.properties.agree;
+                            				currentProperty.reject = o.properties.reject;
+                            				break;
+                            			}
+                            		}
                             	}
                             }
 
@@ -644,7 +640,7 @@ angular.module('activitiModeler')
         $scope.propertyClicked = function (index) {
         	//lizunyi 添加逻辑判断
     		var $props = $scope.selectedItem.properties;
-    		for(var $x in $props){
+    		for(var $x = 0 ;$x < $props.length;$x++){
     			if("oryx-process_id" == $props[$x]["key"]){
     				return;
     			}
@@ -721,53 +717,79 @@ angular.module('activitiModeler')
             	}
             	shape.propertiesChanged["oryx-name"] = true;            	
             	var $props = $scope.selectedItem.properties;
-            	try{
-            		for(var $x in $props){
-            			if("oryx-name" == $props[$x]["key"]){
-            				$props[$x]["value"] = property.value.assignment.assignee;
-            				break;
-            			}
-            		}
-            	}catch(err){
-            		
-            	}
+            	for(var $x = 0 ;$x < $props.length;$x++){
+        			if("oryx-name" == $props[$x]["key"]){
+        				$props[$x]["value"] = property.value.assignment.assignee;
+        				break;
+        			}
+        		}
+            }
+            if("oryx-user-conditionsequenceflow" == key){
+        		shape.properties["oryx-name"] = "自定义";
+            	shape.propertiesChanged["oryx-name"] = true;
+            	
+        		shape.properties["oryx-conditionsequenceflow"] = newValue;
+            	shape.propertiesChanged["oryx-conditionsequenceflow"] = true;
+            	
+            	var $props = $scope.selectedItem.properties;
+        		for(var $x = 0 ;$x < $props.length;$x++){
+        			if("oryx-conditionsequenceflow" == $props[$x]["key"]){
+        				$props[$x]["agree"] = false;
+        				$props[$x]["reject"] = false;
+        				$props[$x]["value"] = "";
+        				continue;
+        			}
+        			if("oryx-name" == $props[$x]["key"]){
+        				$props[$x]["value"] = "自定义";
+        				continue;
+        			}
+        		}
             }
             if("oryx-conditionsequenceflow" == key){
-            	try{
-            		var $isExecute = true;
-	            	var $incoming = $scope.selectedShape.incoming;
-	            	for(var $i = 0 ; $i < $incoming.length ; $i++){
-	            		if($incoming[$i]["properties"]["oryx-overrideid"] == "start"){
+        		var $isExecute = true;
+            	var $incoming = $scope.selectedShape.incoming;
+            	for(var $i = 0 ; $i < $incoming.length ; $i++){
+            		if($incoming[$i]["properties"]["oryx-overrideid"] == "start"){
+            			$isExecute = false;
+            			break;
+            		}
+            	}
+            	if($isExecute){
+	            	var $outgoing = $scope.selectedShape.outgoing;
+	            	for(var $i = 0 ; $i < $outgoing.length ; $i++){
+	            		if($outgoing[$i]["properties"]["oryx-overrideid"] == "end"){
 	            			$isExecute = false;
 	            			break;
 	            		}
 	            	}
-	            	if($isExecute){
-		            	var $outgoing = $scope.selectedShape.outgoing;
-		            	for(var $i = 0 ; $i < $outgoing.length ; $i++){
-		            		if($outgoing[$i]["properties"]["oryx-overrideid"] == "end"){
-		            			$isExecute = false;
-		            			break;
-		            		}
-		            	}
-	            	}
-	            	if($isExecute){
-		            	shape.properties["oryx-agree"] = property.agree;
-		            	shape.properties["oryx-reject"] = property.reject;
-		            	var $v = property.agree ? "同意" : (property.reject ? "驳回" : "自定义");
-		            	shape.properties["oryx-name"] = $v;
-		            	shape.propertiesChanged["oryx-name"] = true;
-		            	var $props = $scope.selectedItem.properties;
-	            		for(var i in $props){
-	            			if("oryx-name" == $props[i]["key"]){
-	            				$props[i]["value"] = $v;
-	            				break;
-	            			}
-	            		}
-	            	}
-            	}catch(err){
-            		
             	}
+            	if($isExecute){
+            		if(shape.properties["oryx-user-conditionsequenceflow"]){
+                		shape.properties["oryx-user-conditionsequenceflow"] = "";
+            			shape.propertiesChanged["oryx-user-conditionsequenceflow"] = true;            	
+                		var $props = $scope.selectedItem.properties;
+                		for(var $x = 0 ;$x < $props.length;$x++){
+                			if("oryx-user-conditionsequenceflow" == $props[$x]["key"]){
+                				$props[$x]["value"] = "";
+                				break;
+                			}
+                		}
+            		}
+                	
+	            	shape.properties["oryx-agree"] = property.agree;
+	            	shape.properties["oryx-reject"] = property.reject;
+	            	var $v = property.agree ? "同意" : (property.reject ? "驳回" : "自定义");
+	            	shape.properties["oryx-name"] = $v;
+	            	shape.propertiesChanged["oryx-name"] = true;
+	            	var $props = $scope.selectedItem.properties;
+	        		for(var $x = 0 ;$x < $props.length;$x++){
+            			if("oryx-name" == $props[$x]["key"]){
+            				$props[$x]["value"] = $v;
+            				break;
+            			}
+            		}
+            	}
+            	 
             }
             if (newValue != oldValue) {
                 var commandClass = ORYX.Core.Command.extend({

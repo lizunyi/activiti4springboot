@@ -28,4 +28,6 @@ public interface WorkFlowService {
 
 	List<HistoricTaskInstance> queryApply(String userId) throws Exception;
 
+	void syncActRuVariable(String executionId, Map map) throws Exception;
+
 }
