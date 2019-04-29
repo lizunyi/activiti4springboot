@@ -151,7 +151,7 @@
       "title" : "表单的标识Key",
       "value" : "",
       "description" : "表单的Key(指向定义的Form).",
-      "popular" : true
+      "popular" : false
     } ]
   }, {
     "name" : "duedatedefinitionpackage",
