@@ -668,7 +668,7 @@ angular.module('activitiModeler')
 
         /* Method available to all sub controllers (for property controllers) to update the internal Oryx model */
         $scope.updatePropertyInModel = function (property, shapeId) {
-
+//        	var modelMetaData = $scope.editor.getModelMetaData();
             var shape = $scope.selectedShape;
             // Some updates may happen when selected shape is already changed, so when an additional
             // shapeId is supplied, we need to make sure the correct shape is updated (current or previous)
@@ -723,11 +723,11 @@ angular.module('activitiModeler')
         				break;
         			}
         		}
-            }
-            if("oryx-user-conditionsequenceflow" == key){
+            }else if("oryx-user-conditionsequenceflow" == key){
         		shape.properties["oryx-name"] = "自定义";
             	shape.propertiesChanged["oryx-name"] = true;
-            	
+            	shape.properties["oryx-agree"] = false;
+            	shape.properties["oryx-reject"] = false;
         		shape.properties["oryx-conditionsequenceflow"] = newValue;
             	shape.propertiesChanged["oryx-conditionsequenceflow"] = true;
             	
@@ -738,14 +738,12 @@ angular.module('activitiModeler')
         				$props[$x]["reject"] = false;
         				$props[$x]["value"] = "";
         				continue;
-        			}
-        			if("oryx-name" == $props[$x]["key"]){
+        			}else if("oryx-name" == $props[$x]["key"]){
         				$props[$x]["value"] = "自定义";
         				continue;
         			}
         		}
-            }
-            if("oryx-conditionsequenceflow" == key){
+            }else if("oryx-conditionsequenceflow" == key){
         		var $isExecute = true;
             	var $incoming = $scope.selectedShape.incoming;
             	for(var $i = 0 ; $i < $incoming.length ; $i++){
@@ -789,7 +787,6 @@ angular.module('activitiModeler')
             			}
             		}
             	}
-            	 
             }
             if (newValue != oldValue) {
                 var commandClass = ORYX.Core.Command.extend({
