@@ -459,7 +459,7 @@
       "id" : "conditionsequenceflow",
       "type" : "boolean-array",
       "title" : "跳转条件",
-	  "value" : "",
+	  "value" : "${TASK_GLOBAL_CONDITION == 1}",
       "agree": true,
       "reject": false,
       "description" : "流程跳线的条件定义",

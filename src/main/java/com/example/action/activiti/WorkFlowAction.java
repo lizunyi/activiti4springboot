@@ -47,6 +47,7 @@ public class WorkFlowAction {
 			workFlowService.apply(apply);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "Error";
 		}
 		return "Ok";
 	}
