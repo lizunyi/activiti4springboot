@@ -159,6 +159,28 @@ public class WorkFlowAction {
 		}
 		return null;
 	}
+	
+	@ResponseBody
+	@RequestMapping("/query/properties/{modelId}")
+	public JSONArray queryUsers(HttpServletRequest request,@PathVariable String modelId) {
+		try {
+			JSONArray array = new JSONArray();
+			String[] fields = new String[] {"leave_type","start_date","end_date","remark"};
+			for (int i = 0; i < fields.length; i++) {
+				JSONObject object = new JSONObject();
+				object.put("id", fields[i]);
+				object.put("name", fields[i]);
+				object.put("required", false);
+				object.put("readonly", false);
+				object.put("hidden", false);
+				array.add(object);
+			}
+			return array;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@ResponseBody
 	@RequestMapping("/query/roles")

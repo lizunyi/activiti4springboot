@@ -33,20 +33,27 @@ var KisBpmAssignmentCtrl = [ '$scope', '$modal', function($scope, $modal) {
 }];
 
 var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
-	jQuery.ajax({
-		url: '/workflow/query/users',
-		async:false,
-		success:function(data){
-			$scope.users = data;
-		}
-	});
-	jQuery.ajax({
-		url: '/workflow/query/roles',
-		async:false,
-		success:function(data){
-			$scope.roles = data;
-		}
-	});
+	var $meta = $scope.editor.modelMetaData;
+	if(!$meta.$users){
+		jQuery.ajax({
+			url: '/workflow/query/users',
+			async:false,
+			success:function(data){
+				$meta.$users = data;
+			}
+		});
+	}
+	$scope.users = $meta.$users;
+	if(!$meta.$roles){
+		jQuery.ajax({
+			url: '/workflow/query/roles',
+			async:false,
+			success:function(data){
+				$meta.$roles = data;
+			}
+		});
+	}
+	$scope.roles = $meta.$roles;
     // Put json representing assignment on scope
     if ($scope.property.value !== undefined && $scope.property.value !== null
         && $scope.property.value.assignment !== undefined
