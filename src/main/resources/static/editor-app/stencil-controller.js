@@ -372,13 +372,15 @@ angular.module('activitiModeler')
                             		currentProperty.agree = true;
                             		currentProperty.reject = false;
                             		var childs = $scope.modelData.model.childShapes;
-                            		for(var $x = 0; $x < childs.length;$x++){
-                            			var o = childs[$x];
-                            			if(o.properties.hasOwnProperty("agree") && o.resourceId == selectedShape.resourceId){
-                            				currentProperty.agree = o.properties.agree;
-                            				currentProperty.reject = o.properties.reject;
-                            				break;
-                            			}
+                            		if(childs){
+	                            		for(var $x = 0; $x < childs.length;$x++){
+	                            			var o = childs[$x];
+	                            			if(o.properties.hasOwnProperty("agree") && o.resourceId == selectedShape.resourceId){
+	                            				currentProperty.agree = o.properties.agree;
+	                            				currentProperty.reject = o.properties.reject;
+	                            				break;
+	                            			}
+	                            		}
                             		}
                             	}
                             }
