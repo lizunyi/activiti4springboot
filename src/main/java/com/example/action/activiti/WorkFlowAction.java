@@ -26,6 +26,7 @@ import net.sf.json.JSONObject;
 
 /***
  * 流程公共处理入口
+ * 
  * @author saps.weaver
  *
  */
@@ -42,7 +43,7 @@ public class WorkFlowAction {
 
 	@ResponseBody
 	@RequestMapping("/apply")
-	public String apply(HttpServletRequest request, @RequestParam Map<String,Object> apply) {
+	public String apply(HttpServletRequest request, @RequestParam Map<String, Object> apply) {
 		try {
 			workFlowService.apply(apply);
 		} catch (Exception e) {
@@ -54,23 +55,24 @@ public class WorkFlowAction {
 
 	@ResponseBody
 	@RequestMapping("/approve/{taksId}")
-	public String approve(HttpServletRequest request,@PathVariable String taksId, @RequestParam Map<String,Object> apply) {
+	public String approve(HttpServletRequest request, @PathVariable String taksId,
+			@RequestParam Map<String, Object> apply) {
 		try {
-			workFlowService.approve(apply,taksId);
+			workFlowService.approve(apply, taksId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "Ok";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/query/deal/{userId}")
-	public JSONObject queryDeal(HttpServletRequest request,@PathVariable String userId) {
+	public JSONObject queryDeal(HttpServletRequest request, @PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			List<Task> tasks = workFlowService.queryDeal(userId);
-			JSONArray array  = new JSONArray();
-			if(tasks !=null) {
+			JSONArray array = new JSONArray();
+			if (tasks != null) {
 				for (int i = 0; i < tasks.size(); i++) {
 					JSONObject o = new JSONObject();
 					Task task = tasks.get(i);
@@ -90,15 +92,15 @@ public class WorkFlowAction {
 		}
 		return null;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/query/done/{userId}")
-	public JSONObject queryDone(HttpServletRequest request,@PathVariable String userId) {
+	public JSONObject queryDone(HttpServletRequest request, @PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			List<HistoricTaskInstance> tasks = workFlowService.queryDone(userId);
-			JSONArray array  = new JSONArray();
-			if(tasks !=null) {
+			JSONArray array = new JSONArray();
+			if (tasks != null) {
 				for (int i = 0; i < tasks.size(); i++) {
 					JSONObject o = new JSONObject();
 					HistoricTaskInstance task = tasks.get(i);
@@ -119,15 +121,15 @@ public class WorkFlowAction {
 		}
 		return null;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/query/apply/{userId}")
-	public JSONObject queryApply(HttpServletRequest request,@PathVariable String userId) {
+	public JSONObject queryApply(HttpServletRequest request, @PathVariable String userId) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			List<HistoricTaskInstance> tasks = workFlowService.queryApply(userId);
-			JSONArray array  = new JSONArray();
-			if(tasks !=null) {
+			JSONArray array = new JSONArray();
+			if (tasks != null) {
 				for (int i = 0; i < tasks.size(); i++) {
 					JSONObject o = new JSONObject();
 					HistoricTaskInstance task = tasks.get(i);
@@ -148,7 +150,7 @@ public class WorkFlowAction {
 		}
 		return null;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/query/users")
 	public List<User> queryUsers(HttpServletRequest request) {
@@ -159,13 +161,13 @@ public class WorkFlowAction {
 		}
 		return null;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/query/properties/{modelId}")
-	public JSONArray queryUsers(HttpServletRequest request,@PathVariable String modelId) {
+	public JSONArray queryUsers(HttpServletRequest request, @PathVariable String modelId) {
 		try {
 			JSONArray array = new JSONArray();
-			String[] fields = new String[] {"leave_type","start_date","end_date","remark"};
+			String[] fields = new String[] { "leave_type", "start_date", "end_date", "remark" };
 			for (int i = 0; i < fields.length; i++) {
 				JSONObject object = new JSONObject();
 				object.put("id", fields[i]);
