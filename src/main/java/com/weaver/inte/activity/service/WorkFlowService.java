@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.task.Task;
 
 /***
@@ -30,5 +31,6 @@ public interface WorkFlowService {
 
 	void syncActRuVariable(String executionId, Map map) throws Exception;
 
+	List<Model> queryFlow(String userId, int start, int end);
 
 }

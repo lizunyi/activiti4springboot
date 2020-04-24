@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.weaver.inte.activity.service.WorkFlowService;
+import com.weaver.inte.activity.utils.StringUtils;
 import com.weaver.inte.business.mapper.RoleMapper;
 import com.weaver.inte.business.mapper.UserMapper;
 import com.weaver.inte.business.model.User;
@@ -39,6 +41,37 @@ public class WorkFlowController {
 	private RoleMapper roleMapper;
 
 	@ResponseBody
+	@RequestMapping("/query/flow/{userId}")
+	public JSONObject queryFlow(HttpServletRequest request, @PathVariable String userId) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			User user = userMapper.selectByPrimaryKey(userId);
+			List<Model> models = workFlowService.queryFlow(String.valueOf(user.getUid()),1,10);
+			JSONArray array = new JSONArray();
+			if (models != null) {
+				for (int i = 0; i < models.size(); i++) {
+					JSONObject o = new JSONObject();
+					Model t = models.get(i);
+					o.put("id",t.getId());
+					o.put("flowName",t.getName());
+					o.put("status", StringUtils.isNull(t.getDeploymentId()) ? 0 : 1);
+					o.put("createTime",sdf.format(t.getCreateTime()));
+					o.put("lastUpdateTime",sdf.format(t.getLastUpdateTime()));
+					array.add(o);
+				}
+			}
+			JSONObject result = new JSONObject();
+			result.put("code", 0);
+			result.put("count", models.size());
+			result.put("data", array);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@ResponseBody
 	@RequestMapping("/query/deal/{userId}")
 	public JSONObject queryDeal(HttpServletRequest request, @PathVariable String userId) {
 		try {
@@ -60,8 +93,9 @@ public class WorkFlowController {
 				}
 			}
 			JSONObject result = new JSONObject();
-			result.put("total", tasks.size());
-			result.put("rows", array);
+			result.put("code", 0);
+			result.put("count", tasks.size());
+			result.put("data", array);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,8 +123,9 @@ public class WorkFlowController {
 				}
 			}
 			JSONObject result = new JSONObject();
-			result.put("total", tasks.size());
-			result.put("rows", array);
+			result.put("code", 0);
+			result.put("count", tasks.size());
+			result.put("data", array);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,8 +153,9 @@ public class WorkFlowController {
 				}
 			}
 			JSONObject result = new JSONObject();
-			result.put("total", tasks.size());
-			result.put("rows", array);
+			result.put("code", 0);
+			result.put("count", tasks.size());
+			result.put("data", array);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

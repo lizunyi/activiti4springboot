@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/layui/css/layui.css" />
+<title>流程主页面</title>
+
+<style>
+	.layui-form .layui-row{
+		padding:40px 0px 0px 70px;
+	}
+	.layui-form .layui-row input{
+		height:30px;
+		line-height:30px;
+	}
+</style>
+
+</head>
+<body>
+<div>
+	<div class="layui-tab" lay-filter="tabs">
+		<ul class="layui-tab-title">
+			<li lay-id="flow" class="layui-this">流程列表</li>
+			<li lay-id="deal">待办列表</li>
+			<li lay-id="done">已办列表</li>
+			<li lay-id="apply">已申请列表</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div id="table" class="layui-tab-item" lay-filter="table"></div>
+		</div>
+	</div>
+	<div class="main"></div>
+</div>
+<script type="text/javascript" src="/layui/layui.all.js"></script>
+
+<script type="text/html" id="barFlow">
+  <a class="layui-btn layui-btn" lay-event="addFlow">新增</a>
+</script>
+
+<script type="text/html" id="barRowFlow">
+  <a class="layui-btn layui-btn" lay-event="applyFlow">新建审批</a>
+  <a class="layui-btn layui-btn" lay-event="editFlow">修改</a>
+  <a class="layui-btn layui-btn" lay-event="edit">删除</a>
+</script>
+
+<script type="text/html" id="barEdit">
+  <a class="layui-btn layui-btn" lay-event="edit">办理</a>
+  <a class="layui-btn layui-btn layui-bg-blue" lay-event="viewDiagram">查看流程图</a>
+  <a class="layui-btn layui-btn layui-bg-blue" lay-event="view">详情</a>
+</script>
+
+<script type="text/html" id="barDetail">
+  <a class="layui-btn layui-btn layui-bg-blue" lay-event="viewLog">查看审批日志</a>
+  <a class="layui-btn layui-btn layui-bg-blue" lay-event="viewDiagram">查看流程图</a>
+  <a class="layui-btn layui-btn layui-bg-blue" lay-event="view">详情</a>
+</script>
+
+<form class="layui-form" id="addFlowForm" style="display:none">
+  	<div class="layui-row">
+		<div class="layui-form-item">
+		  <label class="layui-col-xs2">流程名称</label>
+		  <div class="layui-col-xs8">
+		    <input type="text" id="workflowName" autocomplete="off" placeholder="请输入流程名称" class="layui-input">
+		  </div>
+		</div>
+		
+		<div class="layui-form-item">
+		  <label class="layui-col-xs2">流程key</label>
+		  <div class="layui-col-xs8">
+		    <input type="text" id="workflowKey" autocomplete="off" placeholder="请输入流程key" class="layui-input">
+		  </div>
+		</div>
+    	<div>
+    		<button type="button" class="layui-btn layui-btn-normal" id="confirmFlowForm">确定</button>
+    	</div>
+	</div>
+</form>
+<script>
+var userId = 1;
+var win = {};
+
+layui.use('element', function(){
+	var $ = layui.jquery,element = layui.element,table = layui.table;
+	win = {
+		w: $(window).width(),
+		h: $(window).height()
+	};
+	element.on('tab(tabs)', function(elem){
+		if(elem.index == 0){
+			table.render({
+				elem: '#table'
+				,url: '/workflow/query/flow/'+userId
+			    ,toolbar: '#barFlow'
+				,cellMinWidth: 80
+				,cols: [[
+					 {field:'id', title: '流程ID'}
+					,{field:'flowName', title: '流程名称'}
+					,{field:'createTime', title: '创建时间'}
+					,{field:'lastUpdateTime', title: '最后更新时间'}
+					,{field:'status', title: '状态',templet:function(d){
+						return ['不可用','可用'][d.status];
+					}}
+					,{fixed: 'right', width: 165,title:"操作",align:'center', toolbar: '#barRowFlow'}
+				]]
+			});
+		}else if(elem.index == 1){
+			table.render({
+				elem: '#table'
+				,url: '/workflow/query/deal/'+userId
+				,cellMinWidth: 80
+				,cols: [[
+					 {field:'id', title: '任务ID'}
+					,{field:'task_name', title: '流程名称'}
+					,{field:'task_name', title: '当前审批人'}
+					,{field:'apply_user', title: '申请人'}
+					,{field:'create_time', title: '申请时间', minWidth: 100}
+					,{fixed: 'right', width: 165,title:"操作",align:'center', toolbar: '#barEdit'}
+				]]
+			});
+		}else if(elem.index == 2){
+			table.render({
+				elem: '#table'
+				,url: '/workflow/query/done/'+userId
+				,cellMinWidth: 80
+				,cols: [[
+					 {field:'id', title: '任务ID'}
+					,{field:'task_name', title: '流程名称'}
+					,{field:'apply_user', title: '申请人'}
+					,{field:'task_name', title: '最后办理人'}
+					,{field:'create_time', title: '申请时间', minWidth: 100}
+					,{fixed: 'right', width: 165,title:"操作",align:'center', toolbar: '#barDetail'}
+				]]
+			});
+		}else if(elem.index == 3){
+			table.render({
+				elem: '#table'
+				,url: '/workflow/query/apply/'+userId
+				,cellMinWidth: 80
+				,cols: [[
+					 {field:'id', title: '任务ID'}
+					,{field:'task_name', title: '流程名称'}
+					,{field:'handle_user', title: '当前办理人'}
+					,{field:'create_time', title: '申请时间', minWidth: 100}
+					,{fixed: 'right', width: 165,title:"操作",align:'center', toolbar: '#barDetail'}
+				]]
+			});
+		}
+	});
+
+    table.on('toolbar(table)', function(obj){
+		if(obj.event == "addFlow"){
+			var that = this; 
+			layer.open({
+				type: 1
+				,title: '新建流程'
+				,area: ['500px', '300px']
+				,shade: 0
+				,content: $("#addFlowForm")
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
+		}
+	});
+    
+    table.on('tool(table)', function(obj){
+		if(obj.event == "editFlow"){
+			var that = this; 
+			layer.open({
+				type: 2
+				,title: '设计流程'
+				,area: [ win.w + 'px', win.h + 'px']
+				,shade: 0
+				,content: '/modeler.html?modelId='+ obj.data.id
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
+		}else if(obj.event == "applyFlow"){
+			var that = this; 
+			layer.open({
+				type: 2
+				,title: '设计流程'
+				,area: [ win.w + 'px', win.h + 'px']
+				,shade: 0
+				,content: '/modeler.html?modelId='+ obj.data.id
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
+		}
+	});
+    
+    $("#confirmFlowForm").click(function(){
+    	if(!$("#workflowName").val()){
+    		alert('请输入流程名称');
+    		return;
+    	}
+    	if(!$("#workflowKey").val()){
+    		alert('请输入流程key');
+    		return;
+    	}
+	  	layer.closeAll();
+    	layer.open({
+			type: 2
+			,title: '设计流程'
+			,area: [ win.w + 'px', win.h + 'px']
+			,shade: 0
+			,content: '/service/create?name='+$("#workflowName").val()+'&key='+$("#workflowKey").val()
+			,yes: function(){
+			  	layer.closeAll();
+			}
+		});
+    });
+	element.tabChange('tabs', 'flow');
+});
+
+function alert(text){
+	 layer.open({
+        type: 1
+        ,content: '<div style="padding: 20px 100px;">'+ text +'</div>'
+        ,shade: 0 
+     });
+}
+</script>
+</body>
+</html>

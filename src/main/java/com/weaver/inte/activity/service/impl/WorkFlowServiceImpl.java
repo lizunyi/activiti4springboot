@@ -8,10 +8,12 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,6 @@ import com.weaver.inte.activity.service.BusinessService;
 import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.SpringUtils;
 import com.weaver.inte.activity.utils.StringUtils;
-import com.weaver.inte.business.mapper.UserMapper;
-import com.weaver.inte.business.model.User;
 
 /***
  * 工作流实现类
@@ -52,6 +52,8 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	private HistoryService historyService;
 	@Resource
 	private ActRuVariableMapper actRuVariableMapper;
+	@Resource
+	private RepositoryService repositoryService;
 
 	/***
 	 * 申请流程
@@ -131,7 +133,10 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 */
 	@Override
 	public List<Task> queryDeal(String userName,List<String> roles) throws Exception {
-		return taskservice.createTaskQuery().or().taskCandidateGroupIn(roles).taskCandidateOrAssigned("USER(" + userName + ")").endOr().list();
+		return taskservice.createTaskQuery()
+		.or().taskCandidateGroupIn(roles)
+		.taskCandidateOrAssigned("USER(" + userName + ")").endOr()
+		.list();
 	}
 
 	/***
@@ -166,5 +171,11 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 				actRuVariableMapper.updateById(ins.getId(), StringUtils.ifNull(map.get(key)));
 			}
 		}
+	}
+
+	@Override
+	public List<Model> queryFlow(String userId,int start,int end) {
+		return repositoryService.createModelQuery()
+		.list();
 	}
 }
