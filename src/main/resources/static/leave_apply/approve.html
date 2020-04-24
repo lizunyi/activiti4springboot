@@ -55,7 +55,7 @@ margin:30px 0;
 		$(function() {
 			$("#save").click(function(){
 				$.ajax({
-					url:'/workflow/approve/'+ $("#taskId").val(),
+					url:'/leave/approve/'+ $("#taskId").val(),
 					type:'post',
 					data:{
 						id: $("#businessId").val() ,
@@ -63,10 +63,7 @@ margin:30px 0;
 						startDate:$("#startDate").val(),
 						endDate:$("#endDate").val(),
 						remark:$("#remark").val(),
-						TASK_HANDLE_USER:$("#modifyId").val(),
-						TASK_BRANCH_CONDITION:$("#TASK_BRANCH_CONDITION").val(),
-						TASK_GLOBAL_FORM_KEY: "business.leave",
-						TASK_FLOW_TYPE:"0"
+						result:$("#TASK_BRANCH_CONDITION").val(),
 					},
 					success:function(data){
 						alert(data);
