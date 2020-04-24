@@ -4,11 +4,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.example</groupId>
-	<artifactId>activiti-demo</artifactId>
+	<groupId>com.weaver</groupId>
+	<artifactId>inte.activity</artifactId>
+	
 	<version>1.0.0</version>
 	<packaging>war</packaging>
-	<name>activiti-demo</name>
+	<name>inte.activity</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -110,7 +111,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>ROOT</finalName>
+		<finalName>com.weaver.inte.activity</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
