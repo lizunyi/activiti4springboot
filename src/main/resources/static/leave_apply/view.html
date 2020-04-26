@@ -59,10 +59,15 @@ layui.use(['jquery','form','laydate'],function(){
 	var form = layui.form;
 	let flowInstId = getQueryVariable("flowInstId");
 	let taskId = getQueryVariable("taskId") || "";
+	let from = getQueryVariable("from") || "";
 	if(flowInstId){
 		let dataMap = {};
 		$.ajax({
-			url:'/workflow/query/done/data/',
+			url: 
+				from == "deal" ? 
+				'/workflow/query/deal/data' 
+				:
+				'/workflow/query/done/data',
 			data:{
 				flowInstId: flowInstId,
 				taskId: taskId

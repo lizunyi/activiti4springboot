@@ -1,5 +1,6 @@
 package com.weaver.inte.activity.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,13 @@ public interface WorkFlowService {
 
 	void syncActRuVariable(String executionId, Map map) throws Exception;
 
-	List<Model> queryFlow(String userId, int start, int end);
+	List<Model> queryFlow(int start, int end);
 
 	List<Map> queryDealData(String flowInstId) throws Exception;
 	
 	List<Map> queryDoneData(String flowInstId, String taskId);
+
+	InputStream getDiagram(String processInstanceId);
+
+	InputStream getDiagramByModelId(String deployId);
 }

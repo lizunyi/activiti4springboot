@@ -43,12 +43,11 @@ public class WorkFlowController {
 	private RoleMapper roleMapper;
 
 	@ResponseBody
-	@RequestMapping("/query/flow/{userId}")
-	public JSONObject queryFlow(HttpServletRequest request, @PathVariable String userId) {
+	@RequestMapping("/query/flow")
+	public JSONObject queryFlow(HttpServletRequest request) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			User user = userMapper.selectByPrimaryKey(userId);
-			List<Model> models = workFlowService.queryFlow(String.valueOf(user.getUid()),1,10);
+			List<Model> models = workFlowService.queryFlow(1,10);
 			JSONArray array = new JSONArray();
 			if (models != null) {
 				for (int i = 0; i < models.size(); i++) {
@@ -58,6 +57,7 @@ public class WorkFlowController {
 					o.put("flowName",t.getName());
 					o.put("flowKey",t.getKey());
 					o.put("status", StringUtils.isNull(t.getDeploymentId()) ? 0 : 1);
+					o.put("deploymentId", t.getDeploymentId() );
 					o.put("createTime",sdf.format(t.getCreateTime()));
 					o.put("lastUpdateTime",sdf.format(t.getLastUpdateTime()));
 					array.add(o);

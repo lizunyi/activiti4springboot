@@ -1,10 +1,13 @@
 package com.weaver.inte.activity.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,6 +41,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.StringUtils;
 
 @RequestMapping("/service")
@@ -48,6 +52,8 @@ public class ActivityController  implements ModelDataJsonConstants{
 	
 	@Autowired
 	private RepositoryService repositoryService;
+	@Autowired
+	private WorkFlowService workFlowService;
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -238,6 +244,36 @@ public class ActivityController  implements ModelDataJsonConstants{
 			return IOUtils.toString(stencilsetStream, "utf-8");
 		} catch (Exception e) {
 			throw new ActivitiException("Error while loading stencil set", e);
+		}
+	}
+	
+  	@RequestMapping(value = "/image/{processInstanceId}")
+    public void image(HttpServletResponse response, @PathVariable String processInstanceId) {
+		try {
+			InputStream is = workFlowService.getDiagram(processInstanceId);
+			response.setContentType("image/png");
+			BufferedImage image = ImageIO.read(is);
+			OutputStream out = response.getOutputStream();
+			ImageIO.write(image, "png", out);
+			is.close();
+			out.close();
+		} catch (Exception ex) {
+		    log.error("查看流程图失败", ex);
+		}
+	}  	
+	
+	@RequestMapping(value = "/imageByModelId/{modelId}")
+    public void imageByDeploy(HttpServletResponse response, @PathVariable String modelId) {
+		try {
+			InputStream is = workFlowService.getDiagramByModelId(modelId);
+			response.setContentType("image/png");
+			BufferedImage image = ImageIO.read(is);
+			OutputStream out = response.getOutputStream();
+			ImageIO.write(image, "png", out);
+			is.close();
+			out.close();
+		} catch (Exception ex) {
+		    log.error("查看流程图失败", ex);
 		}
 	}
 }

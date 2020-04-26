@@ -21,7 +21,7 @@
 			<li lay-id="done">已办列表</li>
 			<li lay-id="apply">已申请列表</li>
 		</ul>
-		  <div class="layui-form-item" style="margin-top:20px;">
+		  <div id="dusers" class="layui-form-item" style="margin-top:20px;display:none">
 		    <label class="layui-form-label">选择用户</label>
 		    <div class="layui-input-inline">
 		      <select id="selectUser" lay-filter="selectUser"></select>
@@ -58,19 +58,20 @@
   <a class="layui-btn layui-btn" lay-event="addFlow">新增</a>
 </script>
 
-<script type="text/html" id="barRowFlow">
+<script type="text/html" id="barFlowTable">
   <a class="layui-btn layui-btn-xs" lay-event="applyFlow">新建审批</a>
   <a class="layui-btn layui-btn-xs" lay-event="editFlow">修改</a>
+  <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewDiagramByModelId">查看流程图</a>
   <a class="layui-btn layui-btn-xs" lay-event="edit">删除</a>
 </script>
 
-<script type="text/html" id="barEdit">
+<script type="text/html" id="barDealTable">
   <a class="layui-btn layui-btn-xs" lay-event="approveFlow">办理</a>
   <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewDiagram">查看流程图</a>
-  <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="view">详情</a>
+  <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewDeal">详情</a>
 </script>
 
-<script type="text/html" id="barDetail">
+<script type="text/html" id="barDoneTable">
   <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewLog">查看审批日志</a>
   <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="viewDiagram">查看流程图</a>
   <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="view">详情</a>
@@ -113,10 +114,11 @@ layui.use(['element','table','form'], function(){
 	});
 
 	element.on('tab(tabs)', function(elem){
+		$("#dusers").hide();
 		if(elem.index == 0){
 			table.render({
 				elem: '#table'
-				,url: '/workflow/query/flow/'+$("#selectUser").val()
+				,url: '/workflow/query/flow'
 			    ,toolbar: '#barFlow'
 				,cellMinWidth: 80
 				,cols: [[
@@ -127,10 +129,11 @@ layui.use(['element','table','form'], function(){
 					,{field:'status', title: '状态',templet:function(d){
 						return ['不可用','可用'][d.status];
 					}}
-					,{fixed: 'right', title:"操作",align:'center', toolbar: '#barRowFlow'}
+					,{fixed: 'right', title:"操作",align:'center', toolbar: '#barFlowTable'}
 				]]
 			});
 		}else if(elem.index == 1){
+			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/deal/'+$("#selectUser").val()
@@ -142,10 +145,11 @@ layui.use(['element','table','form'], function(){
 					,{field:'owner', title: '申请人'}
 					,{field:'createTime', title: '申请时间', minWidth: 100}
 					,{field:'currentApprove', title: '当前审批人'}
-					,{fixed: 'right', title:"操作",align:'center', toolbar: '#barEdit'}
+					,{fixed: 'right', title:"操作",align:'center', toolbar: '#barDealTable'}
 				]]
 			});
 		}else if(elem.index == 2){
+			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/done/'+$("#selectUser").val()
@@ -160,10 +164,11 @@ layui.use(['element','table','form'], function(){
 					,{field:'taskEndTime', title: '任务结束时间', minWidth: 100}
 					,{field:'duration', title: '任务耗时'}
 					,{field:'flowStatus', title: '流程状态'}
-					,{fixed: 'right', title:"操作",width:300, toolbar: '#barDetail'}
+					,{fixed: 'right', title:"操作",width:300, toolbar: '#barDoneTable'}
 				]]
 			});
 		}else if(elem.index == 3){
+			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/apply/'+$("#selectUser").val()
@@ -176,7 +181,7 @@ layui.use(['element','table','form'], function(){
 					,{field:'endTime', title: '流程结束时间', minWidth: 100}
 					,{field:'duration', title: '流程耗时'}
 					,{field:'flowStatus', title: '流程状态'}
-					,{fixed: 'right', title:"操作",width:300, toolbar: '#barDetail'}
+					,{fixed: 'right', title:"操作",width:300, toolbar: '#barDoneTable'}
 				]]
 			});
 		}
@@ -235,6 +240,18 @@ layui.use(['element','table','form'], function(){
 				  	layer.closeAll();
 				}
 			});
+		} else if(obj.event == "viewDeal"){
+			var that = this; 
+			layer.open({
+				type: 2
+				,title: '详情-' + obj.data.flowName
+				,area: [ win.w + 'px', win.h + 'px']
+				,shade: 0
+				,content: "/leave_apply/view.html?taskId="+(obj.data.taskId||"")+"&flowInstId="+obj.data.flowInstId+"&from=deal"
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
 		} else if(obj.event == "view"){
 			var that = this; 
 			layer.open({
@@ -243,6 +260,30 @@ layui.use(['element','table','form'], function(){
 				,area: [ win.w + 'px', win.h + 'px']
 				,shade: 0
 				,content: "/leave_apply/view.html?taskId="+(obj.data.taskId||"")+"&flowInstId="+obj.data.flowInstId
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
+		} else if(obj.event == "viewDiagram"){
+			var that = this; 
+			layer.open({
+				type: 1
+				,title: '流程图-' + obj.data.flowName
+				,area: ['800px','500px']
+				,shade: 0
+				,content: "<img src='/service/image/"+obj.data.flowInstId+"' />"
+				,yes: function(){
+				  	layer.closeAll();
+				}
+			});
+		} else if(obj.event == "viewDiagramByModelId"){
+			var that = this; 
+			layer.open({
+				type: 1
+				,title: '流程图-' + obj.data.flowName
+				,area: ['800px','500px']
+				,shade: 0
+				,content: "<img src='/service/imageByModelId/"+obj.data.id+"' />"
 				,yes: function(){
 				  	layer.closeAll();
 				}
