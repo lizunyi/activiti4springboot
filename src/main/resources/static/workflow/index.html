@@ -94,7 +94,17 @@ function initSelectUsers(form){
 		}
 	});
 }
-
+function reload(table){
+	let options = table.options("table");
+	let urls = options.url.split('/');
+	if(urls.length > 4){
+		urls.pop();
+		urls.push($("#selectUser").val());
+	}
+	table.reload('table',{
+		url:urls.join("/")
+	});
+}
 layui.use(['element','table','form'], function(){
 	$ = layui.jquery,element = layui.element,table = layui.table,form=layui.form;
 	win = {
@@ -104,13 +114,7 @@ layui.use(['element','table','form'], function(){
 	
 	initSelectUsers(form);
 	form.on("select(selectUser)",function(data){
-		let options = table.options("table");
-		let urls = options.url.split('/');
-		urls.pop();
-		urls.push($("#selectUser").val());
-		table.reload('table',{
-			url:urls.join("/")
-		});
+		reload(table);
 	});
 
 	element.on('tab(tabs)', function(elem){
@@ -226,6 +230,10 @@ layui.use(['element','table','form'], function(){
 				,content: "/leave_apply/business.html?flowKey=" + obj.data.flowKey+"&flowHandleUserId=" + $("#selectUser").val()
 				,yes: function(){
 				  	layer.closeAll();
+				}
+				,end:function(){
+					debugger
+					reload(layui.table);
 				}
 			});
 		} else if(obj.event == "approveFlow"){
