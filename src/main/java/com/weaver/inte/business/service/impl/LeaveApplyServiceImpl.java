@@ -27,7 +27,7 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
 		BeanUtils.populate(apply, formRecord);
 		long flowHandleUserId = StringUtils.ifLongNull(formRecord.get("flowHandleUserId"));
 		apply.setCreateId(flowHandleUserId);
-		leaveApplyMapper.insert(apply);
+		leaveApplyMapper.insertUseGeneratedKeys(apply);
 		return apply.getId();
 	}
 

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/layui/src/css/layui.css" />
+<title>业务添加</title>
+</head>
+<body>
+
+<form class="layui-form" action="">
+	<input type="hidden" id="id" />
+	<div class="layui-form-item" style="margin-top:20px;">
+    	<div class="layui-inline">
+			<label class="layui-form-label">请假类型</label>
+			<div class="layui-input-inline">
+				<select id="leaveType">
+					<option value='1'>事假</option>
+					<option value='2'>病假</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	
+	<div class="layui-form-item" style="margin-top:20px;">
+    	<div class="layui-inline">
+			<label class="layui-form-label">请假日期</label>
+			<div class="layui-input-block">
+        		<input type="text" id="date" style="width:200px;" lay-verify="date" class="layui-input">
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="layui-form-item layui-form-text">
+	    <label class="layui-form-label">事由</label>
+	    <div class="layui-input-block">
+	      <textarea id="remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+	    </div>
+	</div>
+	
+	<div class="layui-form-item" style="margin-top:20px;">
+    	<div class="layui-inline">
+			<label class="layui-form-label">意见</label>
+			<div class="layui-input-inline">
+				<select id="TASK_BRANCH_CONDITION">
+					<option value='1'>同意</option>
+					<option value='2'>驳回</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	
+	<div class="layui-form-item" align="center">
+    	<button type="button" id="save" class="layui-btn">提交</button>
+	</div>
+</form>
+
+<script type="text/javascript" src="/layui/src/layui.js"></script>
+<script>
+function getQueryVariable(variable){
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+           var pair = vars[i].split("=");
+           if(pair[0] == variable){
+        	   return pair[1];
+           }
+       }
+       return null;
+}
+var flowInstId,taskId;
+layui.use(['jquery','form','laydate'],function(){
+	var laydate = layui.laydate;
+	var $ = layui.jquery;
+	let flowKey = getQueryVariable("flowKey");
+	flowInstId = getQueryVariable("flowInstId");
+	let flowHandleUserId = getQueryVariable("flowHandleUserId");
+	taskId = getQueryVariable("taskId");
+	if(flowInstId){
+		let businessKey = getQueryVariable("businessKey");
+		let dataMap = {};
+		$.ajax({
+			url:'/workflow/query/deal/data',
+			data:{
+				flowInstId: flowInstId
+			},
+			async: false,
+			success:function(data){
+				if(data){
+					for(let i in data){
+						if(data[i]["fieldvalue"]){
+							dataMap[data[i]["fieldid"]] = data[i]["fieldvalue"];
+						}
+					}
+				}
+			}
+		});
+		$("#id").val(businessKey);
+		$("#leaveType").val(dataMap.leaveType);
+		$("#date").val(dataMap.startDate + ' ~ ' + dataMap.endDate);
+		$("#remark").val(dataMap.remark);
+	}
+	laydate.render({
+		elem: '#date'
+		,type: 'date'
+		,range: '~'
+		,format: 'yyyy-MM-dd'
+	});
+	
+	$("#save").click(function(){
+		$.ajax({
+			url:flowInstId ? '/leave/approve/'+taskId : '/leave/apply',
+			type:'post',
+			data:{
+				id: $("#id").val(),
+				leaveType: $("#leaveType").val(),
+				startDate: $("#date").val().split('~')[0].trim(),
+				endDate: $("#date").val().split('~')[1].trim(),
+				remark: $("#remark").val(),
+				TASK_BRANCH_CONDITION: $("#TASK_BRANCH_CONDITION").val(),
+				flowHandleUserId: flowHandleUserId,
+				flowKey: flowKey
+			},
+			success:function(data){
+				alert(data);
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

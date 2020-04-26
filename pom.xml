@@ -71,11 +71,6 @@
 			<version>2.4</version>
 			<classifier>jdk15</classifier>
 		</dependency>
-		<!-- thymeleaf -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework.boot</groupId> -->
-		<!-- <artifactId>spring-boot-starter-thymeleaf</artifactId> -->
-		<!-- </dependency> -->
 		<!-- activiti 工作流所需包 -->
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -97,17 +92,13 @@
 			<artifactId>batik-codec</artifactId>
 			<version>1.7</version>
 		</dependency>
-		<!-- 热部署 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
+			<groupId>com.weaver</groupId>
+			<artifactId>inte.activity.api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- commons-beanutils -->
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-		</dependency>
+		
+		
 	</dependencies>
 
 	<build>

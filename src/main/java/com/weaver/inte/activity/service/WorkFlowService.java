@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Model;
-import org.activiti.engine.task.Task;
+
+import com.weaver.inte.activity.model.ActApplyModel;
+import com.weaver.inte.activity.model.ActDealModel;
+import com.weaver.inte.activity.model.ActDoneModel;
 
 /***
  * 工作流Service
@@ -23,14 +26,18 @@ public interface WorkFlowService {
 
 	void approve(Map<String, Object> apply, String taskid) throws Exception;
 
-	List<Task> queryDeal(String userName, List<String> roles) throws Exception;
+	List<ActDealModel> queryDeal(String userName, List<String> roles) throws Exception;
 	
-	List<HistoricTaskInstance> queryDone(String userId) throws Exception;
+	
+	List<ActDoneModel> queryDone(String userId) throws Exception;
 
-	List<HistoricTaskInstance> queryApply(String userId) throws Exception;
+	List<ActApplyModel> queryApply(String userId) throws Exception;
 
 	void syncActRuVariable(String executionId, Map map) throws Exception;
 
 	List<Model> queryFlow(String userId, int start, int end);
 
+	List<Map> queryDealData(String flowInstId) throws Exception;
+	
+	List<Map> queryDoneData(String flowInstId, String taskId);
 }

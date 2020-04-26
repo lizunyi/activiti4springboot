@@ -6,10 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.weaver.inte.activity.model.WorkflowReq;
 
 @Table(name = "leave_apply")
-public class LeaveApply extends WorkflowReq{
+public class LeaveApply {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

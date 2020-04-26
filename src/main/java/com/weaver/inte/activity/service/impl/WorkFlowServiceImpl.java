@@ -1,5 +1,7 @@
 package com.weaver.inte.activity.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +13,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -19,7 +20,13 @@ import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.weaver.inte.activity.mapper.ActApplyMapper;
+import com.weaver.inte.activity.mapper.ActDealMapper;
+import com.weaver.inte.activity.mapper.ActDoneMapper;
 import com.weaver.inte.activity.mapper.ActRuVariableMapper;
+import com.weaver.inte.activity.model.ActApplyModel;
+import com.weaver.inte.activity.model.ActDealModel;
+import com.weaver.inte.activity.model.ActDoneModel;
 import com.weaver.inte.activity.service.BusinessService;
 import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.SpringUtils;
@@ -49,17 +56,24 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	@Resource
 	private TaskService taskservice;
 	@Resource
-	private HistoryService historyService;
-	@Resource
 	private ActRuVariableMapper actRuVariableMapper;
 	@Resource
 	private RepositoryService repositoryService;
+	@Resource
+	private ActDealMapper dealMapper;
+	@Resource
+	private ActDoneMapper doneMapper;
+	@Resource
+	private ActApplyMapper applyMapper;
 
 	/***
 	 * 申请流程
 	 */
 	@Override
 	public void apply(Map<String, Object> map) throws Exception {
+		String flowKey = StringUtils.ifNull(map.get("flowKey"));
+		Assert.hasLength(flowKey, "flowKey不能为空!");
+		
 		String businessServiceName = StringUtils.ifNull(map.get("businessServiceName"));
 		Assert.hasLength(businessServiceName, "businessServiceName不能为空!");
 		
@@ -86,7 +100,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 			Assert.isTrue(businessId != 0, "业务id不能为空!");
 		}
 		// 3.开始任务,并生成流程实例id
-		ProcessInstance instance = runtimeservice.startProcessInstanceByKey("myWorkFlow", String.valueOf(businessId),
+		ProcessInstance instance = runtimeservice.startProcessInstanceByKey(flowKey, String.valueOf(businessId),
 				map);
 		// 4.同步业务的流程实例信息与状态
 		businessService.applyCallback(flowType, Long.parseLong(instance.getId()), businessId);
@@ -112,7 +126,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		task.setAssignee(StringUtils.ifNull(map.get("flowHandleUserId")));
 		taskservice.saveTask(task);
 		// 2.提交任务并生成新的任务
-		taskservice.setVariable(taskId, "result",StringUtils.ifIntNull(map.get("result"), 0));
+		taskservice.setVariable(taskId, "TASK_BRANCH_CONDITION",StringUtils.ifIntNull(map.get("TASK_BRANCH_CONDITION"), 0));
 		taskservice.setVariablesLocal(taskId, map);
 		// activiti 的bug,理论上act_ru_variable 的数据应该随着每次审批都会修改成最新的,但是activiti目前没有解决,只有通过手动处理
 		syncActRuVariable(task.getExecutionId(), map);
@@ -132,31 +146,33 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 * 查询我的待办任务
 	 */
 	@Override
-	public List<Task> queryDeal(String userName,List<String> roles) throws Exception {
-		return taskservice.createTaskQuery()
-		.or().taskCandidateGroupIn(roles)
-		.taskCandidateOrAssigned("USER(" + userName + ")").endOr()
-		.list();
+	public List<ActDealModel> queryDeal(String userName,List<String> roles) throws Exception {
+		List<String> approveList = new ArrayList();
+		approveList.add("USER("+userName+")");
+		approveList.addAll(roles);
+		Map params = new HashMap();
+		params.put("approveList", approveList);
+		return dealMapper.getDealList("query.deal",params);
 	}
 
 	/***
 	 * 查询我处理过的任务
 	 */
 	@Override
-	public List<HistoricTaskInstance> queryDone(String userId) throws Exception {
-		return historyService.createHistoricTaskInstanceQuery().taskAssignee(userId).list();
+	public List<ActDoneModel> queryDone(String userId) throws Exception {
+		Map params = new HashMap();
+		params.put("userId", userId);
+		return doneMapper.getDoneList("query.done", params);
 	}
 
 	/***
 	 * 查询我申请的任务
 	 */
 	@Override
-	public List<HistoricTaskInstance> queryApply(String userId) throws Exception {
-		return historyService.createNativeHistoricTaskInstanceQuery()
-//				.parameter("OWNER_", userId)
-//				.parameter("PARENT_TASK_ID_", "IS NULL")
-				.sql("select * from act_hi_taskinst where OWNER_ = '" + userId + "' and PARENT_TASK_ID_ IS NULL ")
-				.list();
+	public List<ActApplyModel> queryApply(String userId) throws Exception {
+		Map params = new HashMap();
+		params.put("userId", userId);
+		return  applyMapper.getApplyList("query.apply", params);
 	}
 
 	@Override
@@ -177,5 +193,15 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	public List<Model> queryFlow(String userId,int start,int end) {
 		return repositoryService.createModelQuery()
 		.list();
+	}
+
+	@Override
+	public List<Map> queryDealData(String flowInstId) throws Exception {
+		return dealMapper.getDealData(flowInstId);
+	}
+
+	@Override
+	public List<Map> queryDoneData(String flowInstId, String taskId) {
+		return doneMapper.getDoneData(flowInstId,taskId);
 	}
 }
