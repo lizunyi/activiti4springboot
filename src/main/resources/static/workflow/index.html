@@ -21,7 +21,7 @@
 			<li lay-id="done">已办列表</li>
 			<li lay-id="apply">已申请列表</li>
 		</ul>
-		  <div id="dusers" class="layui-form-item" style="margin-top:20px;display:none">
+		  <div id="dusers" class="layui-form-item" style="margin-top:20px;">
 		    <label class="layui-form-label">选择用户</label>
 		    <div class="layui-input-inline">
 		      <select id="selectUser" lay-filter="selectUser"></select>
@@ -118,7 +118,6 @@ layui.use(['element','table','form'], function(){
 	});
 
 	element.on('tab(tabs)', function(elem){
-		$("#dusers").hide();
 		if(elem.index == 0){
 			table.render({
 				elem: '#table'
@@ -137,7 +136,6 @@ layui.use(['element','table','form'], function(){
 				]]
 			});
 		}else if(elem.index == 1){
-			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/deal/'+$("#selectUser").val()
@@ -153,7 +151,6 @@ layui.use(['element','table','form'], function(){
 				]]
 			});
 		}else if(elem.index == 2){
-			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/done/'+$("#selectUser").val()
@@ -172,7 +169,6 @@ layui.use(['element','table','form'], function(){
 				]]
 			});
 		}else if(elem.index == 3){
-			$("#dusers").show();
 			table.render({
 				elem: '#table'
 				,url: '/workflow/query/apply/'+$("#selectUser").val()
@@ -219,6 +215,9 @@ layui.use(['element','table','form'], function(){
 				,yes: function(){
 				  	layer.closeAll();
 				}
+				,end:function(){
+					reload(layui.table);
+				}
 			});
 		}else if(obj.event == "applyFlow"){
 			var that = this; 
@@ -227,12 +226,11 @@ layui.use(['element','table','form'], function(){
 				,title: '申请-' + obj.data.flowName
 				,area: [ win.w + 'px', win.h + 'px']
 				,shade: 0
-				,content: "/leave_apply/business.html?FLOW_KEY=" + obj.data.flowKey+"&TASK_HANDLE_USER=" + $("#selectUser").val()
+				,content: "/leave_apply/business.html?FLOW_KEY=" + obj.data.flowKey+"&TASK_HANDLE_USER_ID=" + $("#selectUser").val() + "&TASK_HANDLE_USER_NAME=" + $("#selectUser :selected").text()
 				,yes: function(){
 				  	layer.closeAll();
 				}
 				,end:function(){
-					debugger
 					reload(layui.table);
 				}
 			});
@@ -243,9 +241,12 @@ layui.use(['element','table','form'], function(){
 				,title: '审批-' + obj.data.flowName
 				,area: [ win.w + 'px', win.h + 'px']
 				,shade: 0
-				,content: "/leave_apply/business.html?taskId="+obj.data.taskId+"&id="+obj.data.businessKey+"&TASK_HANDLE_USER=" + $("#selectUser").val()+"&flowInstId="+obj.data.flowInstId+"&FLOW_KEY=" + obj.data.flowKey
+				,content: "/leave_apply/business.html?taskId="+obj.data.taskId+"&id="+obj.data.businessKey+"&TASK_HANDLE_USER_ID=" + $("#selectUser").val() + "&TASK_HANDLE_USER_NAME=" + $("#selectUser :selected").text() +"&flowInstId="+obj.data.flowInstId+"&FLOW_KEY=" + obj.data.flowKey
 				,yes: function(){
 				  	layer.closeAll();
+				}
+				,end:function(){
+					reload(layui.table);
 				}
 			});
 		} else if(obj.event == "viewDeal"){
@@ -317,6 +318,9 @@ layui.use(['element','table','form'], function(){
 			,content: '/service/create?name='+$("#workflowName").val()+'&key='+$("#workflowKey").val()
 			,yes: function(){
 			  	layer.closeAll();
+			}
+			,end:function(){
+				reload(layui.table);
 			}
 		});
     });

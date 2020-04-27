@@ -73,7 +73,8 @@ layui.use(['jquery','form','laydate'],function(){
 	var laydate = layui.laydate;
 	var $ = layui.jquery;
 	let FLOW_KEY = getQueryVariable("FLOW_KEY");
-	let TASK_HANDLE_USER = getQueryVariable("TASK_HANDLE_USER");
+	let TASK_HANDLE_USER_ID = getQueryVariable("TASK_HANDLE_USER_ID");
+	let TASK_HANDLE_USER_NAME = decodeURI(getQueryVariable("TASK_HANDLE_USER_NAME"));
 	taskId = getQueryVariable("taskId");
 	flowInstId = getQueryVariable("flowInstId");
 	if(flowInstId){
@@ -118,8 +119,9 @@ layui.use(['jquery','form','laydate'],function(){
 				endDate: $("#date").val().split('~')[1].trim(),
 				remark: $("#remark").val(),
 				TASK_BRANCH_CONDITION: $("#TASK_BRANCH_CONDITION").val(),
-				TASK_HANDLE_USER: TASK_HANDLE_USER,
-				FLOW_KEY: FLOW_KEY
+				FLOW_KEY: FLOW_KEY,
+				TASK_HANDLE_USER_ID: TASK_HANDLE_USER_ID,
+				TASK_HANDLE_USER_NAME: TASK_HANDLE_USER_NAME
 			},
 			success:function(data){
 				alert(data);

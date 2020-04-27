@@ -30,7 +30,8 @@ public class LeaveApplyController {
 	@RequestMapping("/apply")
 	public String apply(HttpServletRequest request, @RequestParam Map<String, Object> apply) {
 		try {
-//			apply.put("TASK_HANDLE_USER", "1");
+//			apply.put("TASK_HANDLE_USER_ID", "1");
+//			apply.put("TASK_HANDLE_USER_NAME", "1");
 			apply.put("TASK_FLOW_TYPE", 0);
 			apply.put("BUSINESS_SERVICE_NAME", "business.leave");
 			workFlowService.apply(apply);
@@ -46,12 +47,14 @@ public class LeaveApplyController {
 	public String approve(HttpServletRequest request, @PathVariable String taksId,
 			@RequestParam Map<String, Object> apply) {
 		try {
-//			apply.put("TASK_HANDLE_USER", "1");
+//			apply.put("TASK_HANDLE_USER_ID", "1");
+//			apply.put("TASK_HANDLE_USER_NAME", "1");
 			apply.put("TASK_FLOW_TYPE", 0);
 			apply.put("BUSINESS_SERVICE_NAME", "business.leave");
 			workFlowService.approve(apply, taksId);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "Error";
 		}
 		return "Ok";
 	}

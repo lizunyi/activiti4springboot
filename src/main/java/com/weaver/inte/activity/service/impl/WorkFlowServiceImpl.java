@@ -13,8 +13,10 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -25,6 +27,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.springframework.stereotype.Service;
@@ -49,7 +52,6 @@ import com.weaver.inte.activity.utils.UtilMisc;
  * @author saps.weaver
  *
  */
-@Transactional
 @Service
 public class WorkFlowServiceImpl implements WorkFlowService {
 
@@ -86,6 +88,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 * 申请流程
 	 */
 	@Override
+	@Transactional
 	public void apply(Map<String, Object> map) throws Exception {
 		String FLOW_KEY = StringUtils.ifNull(map.get("FLOW_KEY"));
 		Assert.hasLength(FLOW_KEY, "FLOW_KEY不能为空!");
@@ -98,14 +101,18 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		int TASK_FLOW_TYPE = StringUtils.ifIntNull(map.get("TASK_FLOW_TYPE"), -1);
 		Assert.isTrue(-1 != TASK_FLOW_TYPE,"业务类型不能为空!");
 		
-		Assert.hasLength(StringUtils.ifNull(map.get("TASK_HANDLE_USER")), "办理人不能为空!");
-		String TASK_HANDLE_USER = map.get("TASK_HANDLE_USER").toString();
+		Assert.hasLength(StringUtils.ifNull(map.get("TASK_HANDLE_USER_ID")), "TASK_HANDLE_USER_ID不能为空!");
+		String TASK_HANDLE_USER_ID = map.get("TASK_HANDLE_USER_ID").toString();
+		Assert.hasLength(StringUtils.ifNull(map.get("TASK_HANDLE_USER_NAME")), "TASK_HANDLE_USER_NAME不能为空!");
+		String TASK_HANDLE_USER_NAME = map.get("TASK_HANDLE_USER_NAME").toString();
 		// 1.添加内置属性
 //		map.put("TASK_FLOW_TYPE", 0);//流程操作类型,0:添加,1:修改,2:删除
-		map.put("TASK_HANDLE_USER", TASK_HANDLE_USER);// 处理人
+		map.put("TASK_HANDLE_USER_ID", TASK_HANDLE_USER_ID);// 处理人
+		map.put("TASK_HANDLE_USER_NAME", TASK_HANDLE_USER_NAME);// 处理人
 		map.put("TASK_BRANCH_CONDITION", "1");// 默认,同意
 		map.put("TASK_GLOBAL_CONDITION", "1");// 全局变量,是否同意
-		map.put("TASK_GLOBAL_CREATE_USER", TASK_HANDLE_USER);// 全局变量,创建人
+		map.put("TASK_GLOBAL_CREATE_USER_ID", TASK_HANDLE_USER_ID);// 全局变量,创建人
+		map.put("TASK_GLOBAL_CREATE_USER_NAME", TASK_HANDLE_USER_NAME);// 全局变量,创建人
 //		map.put("TASK_GLOBAL_FORM_KEY", "");// 全局保单key
 		// 2.添加业务
 		long businessId = 0;
@@ -116,20 +123,43 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 			Assert.isTrue(businessId != 0, "业务id不能为空!");
 		}
 		// 3.开始任务,并生成流程实例id
-		ProcessInstance instance = runtimeService.startProcessInstanceByKey(FLOW_KEY, String.valueOf(businessId),
-				map);
+		ProcessInstance instance = runtimeService.startProcessInstanceByKey(FLOW_KEY, String.valueOf(businessId),map);
 		// 4.同步业务的流程实例信息与状态
 		businessService.applyCallback(TASK_FLOW_TYPE, Long.parseLong(instance.getId()), businessId);
 		// 5.生成新的任务之后,需要同步任务的属性
 		Task task = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
-		task.setOwner(TASK_HANDLE_USER);
+		task.setOwner(TASK_HANDLE_USER_ID);
 		taskService.saveTask(task);
+		// 如果下一个审批人，即是当前申请人，则自动审批
+		defaultApprove(businessService,task,map);
 	}
 
+	private void defaultApprove(BusinessService businessService,Task task,Map<String, Object> map) throws Exception{
+		String TASK_HANDLE_USER_ID = map.get("TASK_HANDLE_USER_ID").toString();
+		String applyUserName = map.get("TASK_HANDLE_USER_NAME").toString();
+		BpmnModel model = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+		List<FlowElement> flows = (List<FlowElement>) model.getMainProcess().getFlowElements();
+		for (int i = 0; i < flows.size(); i++) {
+			FlowElement el = flows.get(i);
+			if(el instanceof UserTask && task.getTaskDefinitionKey().contentEquals(el.getId()) && el.getName().contentEquals("USER("+applyUserName + ")")){
+				taskService.complete(task.getId());
+				task = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+				if (task == null) {
+					businessService.complete(map);
+				}else{
+					task.setOwner(TASK_HANDLE_USER_ID);
+					taskService.saveTask(task);
+				}
+				break;
+			}
+		}
+	}
+	
 	/***
 	 * 审批流程
 	 */
 	@Override
+	@Transactional
 	public void approve(Map<String, Object> map, String taskId) throws Exception {
 		String BUSINESS_SERVICE_NAME = StringUtils.ifNull(map.get("BUSINESS_SERVICE_NAME"));
 		Assert.hasLength(BUSINESS_SERVICE_NAME, "BUSINESS_SERVICE_NAME不能为空!");
@@ -139,7 +169,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
 		String oldOwner = task.getOwner();
-		task.setAssignee(StringUtils.ifNull(map.get("TASK_HANDLE_USER")));
+		task.setAssignee(StringUtils.ifNull(map.get("TASK_HANDLE_USER_ID")));
 		taskService.saveTask(task);
 		// 2.提交任务并生成新的任务
 		taskService.setVariable(taskId, "TASK_BRANCH_CONDITION",StringUtils.ifIntNull(map.get("TASK_BRANCH_CONDITION"), 0));

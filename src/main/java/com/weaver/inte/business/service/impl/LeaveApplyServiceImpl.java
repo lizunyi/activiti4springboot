@@ -41,8 +41,8 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
 
 	@Override
 	public void complete(Map<String, Object> formRecord) throws Exception {
-		int flowType = StringUtils.ifIntNull(formRecord.get("flowType"), -1);
-		Assert.isTrue(-1 != flowType, "业务类型不能为空!");
+		int TASK_FLOW_TYPE = StringUtils.ifIntNull(formRecord.get("TASK_FLOW_TYPE"), -1);
+		Assert.isTrue(-1 != TASK_FLOW_TYPE, "业务类型不能为空!");
 
 		Long id = StringUtils.ifLongNull(formRecord.get("id"));
 		Assert.isTrue(0 != id, "业务id不能为空!");
@@ -50,7 +50,7 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
 		LeaveApply apply = leaveApplyMapper.selectByPrimaryKey(id);
 		Assert.isTrue(null != apply, "业务实体不能为空!");
 
-		if (2 == flowType) {
+		if (2 == TASK_FLOW_TYPE) {
 //			apply.setValid(0);//删除
 		} else {
 			BeanUtils.populate(apply, formRecord);
