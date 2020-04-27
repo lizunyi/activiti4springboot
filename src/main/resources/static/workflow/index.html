@@ -227,7 +227,7 @@ layui.use(['element','table','form'], function(){
 				,title: '申请-' + obj.data.flowName
 				,area: [ win.w + 'px', win.h + 'px']
 				,shade: 0
-				,content: "/leave_apply/business.html?flowKey=" + obj.data.flowKey+"&flowHandleUserId=" + $("#selectUser").val()
+				,content: "/leave_apply/business.html?FLOW_KEY=" + obj.data.flowKey+"&TASK_HANDLE_USER=" + $("#selectUser").val()
 				,yes: function(){
 				  	layer.closeAll();
 				}
@@ -243,7 +243,7 @@ layui.use(['element','table','form'], function(){
 				,title: '审批-' + obj.data.flowName
 				,area: [ win.w + 'px', win.h + 'px']
 				,shade: 0
-				,content: "/leave_apply/business.html?taskId="+obj.data.taskId+"&businessKey="+obj.data.businessKey+"&flowHandleUserId=" + $("#selectUser").val()+"&flowInstId="+obj.data.flowInstId+"&flowKey=" + obj.data.flowKey
+				,content: "/leave_apply/business.html?taskId="+obj.data.taskId+"&id="+obj.data.businessKey+"&TASK_HANDLE_USER=" + $("#selectUser").val()+"&flowInstId="+obj.data.flowInstId+"&FLOW_KEY=" + obj.data.flowKey
 				,yes: function(){
 				  	layer.closeAll();
 				}

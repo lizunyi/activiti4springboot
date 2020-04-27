@@ -8,7 +8,7 @@ c.START_TIME_ as startTime,
 c.END_TIME_ as endTime,
 c.DURATION_ as duration,
 a.ASSIGNEE_ as assignee,
-c.BUSINESS_KEY_ as businessKey,
+c.BUSINESS_KEY_ as businessId,
 if(c.END_ACT_ID_ is null,'执行中','已结束') as flowStatus
 from act_hi_taskinst a
 join (select max(a.id_) id_ from act_hi_taskinst a 

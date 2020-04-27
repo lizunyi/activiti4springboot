@@ -72,12 +72,12 @@ var flowInstId,taskId;
 layui.use(['jquery','form','laydate'],function(){
 	var laydate = layui.laydate;
 	var $ = layui.jquery;
-	let flowKey = getQueryVariable("flowKey");
-	flowInstId = getQueryVariable("flowInstId");
-	let flowHandleUserId = getQueryVariable("flowHandleUserId");
+	let FLOW_KEY = getQueryVariable("FLOW_KEY");
+	let TASK_HANDLE_USER = getQueryVariable("TASK_HANDLE_USER");
 	taskId = getQueryVariable("taskId");
+	flowInstId = getQueryVariable("flowInstId");
 	if(flowInstId){
-		let businessKey = getQueryVariable("businessKey");
+		let id = getQueryVariable("id");
 		let dataMap = {};
 		$.ajax({
 			url:'/workflow/query/deal/data',
@@ -95,7 +95,7 @@ layui.use(['jquery','form','laydate'],function(){
 				}
 			}
 		});
-		$("#id").val(businessKey);
+		$("#id").val(id);
 		$("#leaveType").val(dataMap.leaveType);
 		$("#date").val(dataMap.startDate + ' ~ ' + dataMap.endDate);
 		$("#remark").val(dataMap.remark);
@@ -118,8 +118,8 @@ layui.use(['jquery','form','laydate'],function(){
 				endDate: $("#date").val().split('~')[1].trim(),
 				remark: $("#remark").val(),
 				TASK_BRANCH_CONDITION: $("#TASK_BRANCH_CONDITION").val(),
-				flowHandleUserId: flowHandleUserId,
-				flowKey: flowKey
+				TASK_HANDLE_USER: TASK_HANDLE_USER,
+				FLOW_KEY: FLOW_KEY
 			},
 			success:function(data){
 				alert(data);

@@ -16,7 +16,7 @@ public class ActApplyModel {
 	private Long duration;// 流程耗时
 	private String endTime;// 流程结束时间
 	private String assignee;// 最后办理人
-	private String businessKey;// 业务id
+	private String businessId;// 业务id
 	private String flowStatus;// 流程状态
 	public String getFlowDefId() {
 		return flowDefId;
@@ -72,11 +72,11 @@ public class ActApplyModel {
 	public void setAssignee(String assignee) {
 		this.assignee = assignee;
 	}
-	public String getBusinessKey() {
-		return businessKey;
+	public String getBusinessId() {
+		return businessId;
 	}
-	public void setBusinessKey(String businessKey) {
-		this.businessKey = businessKey;
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 	public String getFlowStatus() {
 		return flowStatus;

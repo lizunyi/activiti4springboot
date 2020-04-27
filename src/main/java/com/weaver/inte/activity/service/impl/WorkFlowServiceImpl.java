@@ -59,8 +59,8 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 * @return
 	 * @throws Exception
 	 */
-	private BusinessService get(String formkey) throws Exception {
-		return (BusinessService) SpringUtils.getBean(formkey);
+	private BusinessService get(String businessServiceName) throws Exception {
+		return (BusinessService) SpringUtils.getBean(businessServiceName);
 	}
 
 	@Resource
@@ -87,42 +87,42 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 */
 	@Override
 	public void apply(Map<String, Object> map) throws Exception {
-		String flowKey = StringUtils.ifNull(map.get("flowKey"));
-		Assert.hasLength(flowKey, "flowKey不能为空!");
+		String FLOW_KEY = StringUtils.ifNull(map.get("FLOW_KEY"));
+		Assert.hasLength(FLOW_KEY, "FLOW_KEY不能为空!");
 		
-		String businessServiceName = StringUtils.ifNull(map.get("businessServiceName"));
-		Assert.hasLength(businessServiceName, "businessServiceName不能为空!");
+		String BUSINESS_SERVICE_NAME = StringUtils.ifNull(map.get("BUSINESS_SERVICE_NAME"));
+		Assert.hasLength(BUSINESS_SERVICE_NAME, "BUSINESS_SERVICE_NAME不能为空!");
 		
-		BusinessService businessService = get(businessServiceName);
+		BusinessService businessService = get(BUSINESS_SERVICE_NAME);
 
-		int flowType = StringUtils.ifIntNull(map.get("flowType"), -1);
-		Assert.isTrue(-1 != flowType,"业务类型不能为空!");
+		int TASK_FLOW_TYPE = StringUtils.ifIntNull(map.get("TASK_FLOW_TYPE"), -1);
+		Assert.isTrue(-1 != TASK_FLOW_TYPE,"业务类型不能为空!");
 		
-		Assert.hasLength(StringUtils.ifNull(map.get("flowHandleUserId")), "办理人不能为空!");
-		String flowHandleUserId = map.get("flowHandleUserId").toString();
+		Assert.hasLength(StringUtils.ifNull(map.get("TASK_HANDLE_USER")), "办理人不能为空!");
+		String TASK_HANDLE_USER = map.get("TASK_HANDLE_USER").toString();
 		// 1.添加内置属性
 //		map.put("TASK_FLOW_TYPE", 0);//流程操作类型,0:添加,1:修改,2:删除
-		map.put("TASK_HANDLE_USER", flowHandleUserId);// 处理人
+		map.put("TASK_HANDLE_USER", TASK_HANDLE_USER);// 处理人
 		map.put("TASK_BRANCH_CONDITION", "1");// 默认,同意
 		map.put("TASK_GLOBAL_CONDITION", "1");// 全局变量,是否同意
-		map.put("TASK_GLOBAL_CREATE_USER", flowHandleUserId);// 全局变量,创建人
+		map.put("TASK_GLOBAL_CREATE_USER", TASK_HANDLE_USER);// 全局变量,创建人
 //		map.put("TASK_GLOBAL_FORM_KEY", "");// 全局保单key
 		// 2.添加业务
 		long businessId = 0;
-		if (0 == flowType) {
+		if (0 == TASK_FLOW_TYPE) {
 			businessId = businessService.apply(map);
 		} else {
 			businessId = StringUtils.ifLongNull(map.get("id"));
 			Assert.isTrue(businessId != 0, "业务id不能为空!");
 		}
 		// 3.开始任务,并生成流程实例id
-		ProcessInstance instance = runtimeService.startProcessInstanceByKey(flowKey, String.valueOf(businessId),
+		ProcessInstance instance = runtimeService.startProcessInstanceByKey(FLOW_KEY, String.valueOf(businessId),
 				map);
 		// 4.同步业务的流程实例信息与状态
-		businessService.applyCallback(flowType, Long.parseLong(instance.getId()), businessId);
+		businessService.applyCallback(TASK_FLOW_TYPE, Long.parseLong(instance.getId()), businessId);
 		// 5.生成新的任务之后,需要同步任务的属性
 		Task task = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
-		task.setOwner(flowHandleUserId);
+		task.setOwner(TASK_HANDLE_USER);
 		taskService.saveTask(task);
 	}
 
@@ -131,15 +131,15 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	 */
 	@Override
 	public void approve(Map<String, Object> map, String taskId) throws Exception {
-		String businessServiceName = StringUtils.ifNull(map.get("businessServiceName"));
-		Assert.hasLength(businessServiceName, "businessServiceName不能为空!");
+		String BUSINESS_SERVICE_NAME = StringUtils.ifNull(map.get("BUSINESS_SERVICE_NAME"));
+		Assert.hasLength(BUSINESS_SERVICE_NAME, "BUSINESS_SERVICE_NAME不能为空!");
 		
-		BusinessService businessService = get(businessServiceName);
+		BusinessService businessService = get(BUSINESS_SERVICE_NAME);
 		// 1.获取到上一个节点任务信息
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
 		String oldOwner = task.getOwner();
-		task.setAssignee(StringUtils.ifNull(map.get("flowHandleUserId")));
+		task.setAssignee(StringUtils.ifNull(map.get("TASK_HANDLE_USER")));
 		taskService.saveTask(task);
 		// 2.提交任务并生成新的任务
 		taskService.setVariable(taskId, "TASK_BRANCH_CONDITION",StringUtils.ifIntNull(map.get("TASK_BRANCH_CONDITION"), 0));
