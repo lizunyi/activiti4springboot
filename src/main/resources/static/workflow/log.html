@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/layui/src/css/layui.css" />
+<title>流程日志</title>
+</head>
+<body style="padding:0 20px;">
+<div id="table" class="layui-tab-item" lay-filter="table"></div>
+
+<script type="text/javascript" src="/layui/src/layui.js"></script>
+
+<script>
+var win = {};
+var $;
+function getQueryVariable(variable){
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair[0] == variable){
+     	   return pair[1];
+        }
+    }
+    return null;
+}
+function initSelectUsers(form){
+	$.ajax({
+		url:'/workflow/query/users',
+		async:false,
+		success:function(data){
+			
+		}
+	});
+}
+
+layui.use(['element','table','form'], function(){
+	$ = layui.jquery,element = layui.element,table = layui.table,form=layui.form;
+	win = {
+		w: $(window).width(),
+		h: $(window).height()
+	};
+	
+	let flowInstId = getQueryVariable("flowInstId");
+	table.render({
+		elem: '#table'
+		,url: '/workflow/query/log'
+		,page:false
+		,where:{
+			flowInstId:flowInstId
+		}
+		,cellMinWidth: 80
+		,cols: [[
+			 {field:'taskId', title: '任务ID'}
+			,{field:'taskDefName', title: '审批节点'}
+			,{field:'assignee', title: '审批人'}
+			,{field:'startTime', title: '任务到达时间'}
+			,{field:'endTime', title: '任务结束时间'}
+			,{field:'duration', title: '任务耗时'}
+			,{field:'taskBranchCondition', title: '审批意见'}
+		]]
+	});
+});
+</script>
+</body>
+</html>

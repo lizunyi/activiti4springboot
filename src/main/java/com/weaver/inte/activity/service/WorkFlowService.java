@@ -4,12 +4,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Model;
 
 import com.weaver.inte.activity.model.ActApplyModel;
 import com.weaver.inte.activity.model.ActDealModel;
 import com.weaver.inte.activity.model.ActDoneModel;
+import com.weaver.inte.activity.model.ActLog;
 
 /***
  * 工作流Service
@@ -29,10 +29,11 @@ public interface WorkFlowService {
 
 	List<ActDealModel> queryDeal(String userName, List<String> roles) throws Exception;
 	
-	
 	List<ActDoneModel> queryDone(String userId) throws Exception;
 
 	List<ActApplyModel> queryApply(String userId) throws Exception;
+	
+	List<ActLog> queryLog(String flowInstId) throws Exception;
 
 	void syncActRuVariable(String executionId, Map map) throws Exception;
 

@@ -11,11 +11,13 @@ import org.activiti.engine.repository.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.weaver.inte.activity.model.ActApplyModel;
 import com.weaver.inte.activity.model.ActDealModel;
 import com.weaver.inte.activity.model.ActDoneModel;
+import com.weaver.inte.activity.model.ActLog;
 import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.StringUtils;
 import com.weaver.inte.business.mapper.RoleMapper;
@@ -146,6 +148,22 @@ public class WorkFlowController {
 			result.put("code", 0);
 			result.put("count", tasks.size());
 			result.put("data", tasks);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/query/log")
+	public JSONObject queryLog(HttpServletRequest request,@RequestParam String flowInstId) {
+		try {
+			List<ActLog> logs = workFlowService.queryLog(flowInstId);
+			JSONObject result = new JSONObject();
+			result.put("code", 0);
+			result.put("count", logs.size());
+			result.put("data", logs);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

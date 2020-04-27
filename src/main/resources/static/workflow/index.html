@@ -297,6 +297,15 @@ layui.use(['element','table','form'], function(){
 				  	layer.closeAll();
 				}
 			});
+		} else if(obj.event == "viewLog"){
+			var that = this; 
+			layer.open({
+				type: 2
+				,title: '流程日志-' + obj.data.flowName
+				,area: [ win.w*0.6 + 'px', win.h*0.4 + 'px']
+				,shade: 0
+				,content: "/workflow/log.html?flowInstId="+obj.data.flowInstId
+			});
 		}
 	});
     

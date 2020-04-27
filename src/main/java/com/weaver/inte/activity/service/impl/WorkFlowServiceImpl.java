@@ -27,7 +27,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.springframework.stereotype.Service;
@@ -37,10 +36,12 @@ import com.weaver.inte.activity.enums.BpmsActivityTypeEnum;
 import com.weaver.inte.activity.mapper.ActApplyMapper;
 import com.weaver.inte.activity.mapper.ActDealMapper;
 import com.weaver.inte.activity.mapper.ActDoneMapper;
+import com.weaver.inte.activity.mapper.ActLogMapper;
 import com.weaver.inte.activity.mapper.ActRuVariableMapper;
 import com.weaver.inte.activity.model.ActApplyModel;
 import com.weaver.inte.activity.model.ActDealModel;
 import com.weaver.inte.activity.model.ActDoneModel;
+import com.weaver.inte.activity.model.ActLog;
 import com.weaver.inte.activity.service.BusinessService;
 import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.SpringUtils;
@@ -81,6 +82,8 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	private ActDealMapper dealMapper;
 	@Resource
 	private ActDoneMapper doneMapper;
+	@Resource
+	private ActLogMapper logMapper;
 	@Resource
 	private ActApplyMapper applyMapper;
 
@@ -129,6 +132,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		// 5.生成新的任务之后,需要同步任务的属性
 		Task task = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
 		task.setOwner(TASK_HANDLE_USER_ID);
+		task.setCategory("1");
 		taskService.saveTask(task);
 		// 如果下一个审批人，即是当前申请人，则自动审批
 		defaultApprove(businessService,task,map);
@@ -139,6 +143,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		String applyUserName = map.get("TASK_HANDLE_USER_NAME").toString();
 		BpmnModel model = repositoryService.getBpmnModel(task.getProcessDefinitionId());
 		List<FlowElement> flows = (List<FlowElement>) model.getMainProcess().getFlowElements();
+		String parentTaskId = task.getId();
 		for (int i = 0; i < flows.size(); i++) {
 			FlowElement el = flows.get(i);
 			if(el instanceof UserTask && task.getTaskDefinitionKey().contentEquals(el.getId()) && el.getName().contentEquals("USER("+applyUserName + ")")){
@@ -147,7 +152,9 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 				if (task == null) {
 					businessService.complete(map);
 				}else{
+					task.setParentTaskId(parentTaskId);
 					task.setOwner(TASK_HANDLE_USER_ID);
+					task.setCategory("1");
 					taskService.saveTask(task);
 				}
 				break;
@@ -164,15 +171,18 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		String BUSINESS_SERVICE_NAME = StringUtils.ifNull(map.get("BUSINESS_SERVICE_NAME"));
 		Assert.hasLength(BUSINESS_SERVICE_NAME, "BUSINESS_SERVICE_NAME不能为空!");
 		
+		int TASK_BRANCH_CONDITION = StringUtils.ifIntNull(map.get("TASK_BRANCH_CONDITION"), 0);
+		
 		BusinessService businessService = get(BUSINESS_SERVICE_NAME);
 		// 1.获取到上一个节点任务信息
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
 		String oldOwner = task.getOwner();
 		task.setAssignee(StringUtils.ifNull(map.get("TASK_HANDLE_USER_ID")));
+		task.setCategory(String.valueOf(TASK_BRANCH_CONDITION));
 		taskService.saveTask(task);
 		// 2.提交任务并生成新的任务
-		taskService.setVariable(taskId, "TASK_BRANCH_CONDITION",StringUtils.ifIntNull(map.get("TASK_BRANCH_CONDITION"), 0));
+		taskService.setVariable(taskId, "TASK_BRANCH_CONDITION",String.valueOf(TASK_BRANCH_CONDITION));
 		taskService.setVariablesLocal(taskId, map);
 		// activiti 的bug,理论上act_ru_variable 的数据应该随着每次审批都会修改成最新的,但是activiti目前没有解决,只有通过手动处理
 		syncActRuVariable(task.getExecutionId(), map);
@@ -182,6 +192,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 		if (task != null) {
 			task.setParentTaskId(taskId);
 			task.setOwner(oldOwner);
+			task.setCategory(String.valueOf(TASK_BRANCH_CONDITION));
 			taskService.saveTask(task);
 		} else {
 			businessService.complete(map);
@@ -237,8 +248,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 
 	@Override
 	public List<Model> queryFlow(int start,int end) {
-		return repositoryService.createModelQuery()
-		.list();
+		return repositoryService.createModelQuery().list();
 	}
 
 	@Override
@@ -249,6 +259,13 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 	@Override
 	public List<Map> queryDoneData(String flowInstId, String taskId) {
 		return doneMapper.getDoneData(flowInstId,taskId);
+	}
+
+	@Override
+	public List<ActLog> queryLog(String flowInstId) throws Exception {
+		Map params = new HashMap();
+		params.put("flowInstId", flowInstId);
+		return logMapper.getLogList("flow.log",params);
 	}
 	
 //	@Override
