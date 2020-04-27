@@ -45,8 +45,8 @@ import com.weaver.inte.activity.model.ActLog;
 import com.weaver.inte.activity.service.BusinessService;
 import com.weaver.inte.activity.service.WorkFlowService;
 import com.weaver.inte.activity.utils.SpringUtils;
-import com.weaver.inte.activity.utils.StringUtils;
 import com.weaver.inte.activity.utils.UtilMisc;
+import com.weaver.inte.utils.StringUtils;
 
 /***
  * 工作流实现类

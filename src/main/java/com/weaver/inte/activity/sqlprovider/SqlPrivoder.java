@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import com.weaver.inte.activity.utils.SqlTemplete;
+import com.weaver.inte.sql.SqlTemplete;
 
 /**
  * @description 

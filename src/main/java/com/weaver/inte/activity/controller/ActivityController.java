@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.weaver.inte.activity.service.WorkFlowService;
-import com.weaver.inte.activity.utils.StringUtils;
+import com.weaver.inte.utils.StringUtils;
 
 @RequestMapping("/service")
 @RestController

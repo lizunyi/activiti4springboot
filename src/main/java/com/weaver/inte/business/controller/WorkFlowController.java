@@ -19,10 +19,10 @@ import com.weaver.inte.activity.model.ActDealModel;
 import com.weaver.inte.activity.model.ActDoneModel;
 import com.weaver.inte.activity.model.ActLog;
 import com.weaver.inte.activity.service.WorkFlowService;
-import com.weaver.inte.activity.utils.StringUtils;
 import com.weaver.inte.business.mapper.RoleMapper;
 import com.weaver.inte.business.mapper.UserMapper;
 import com.weaver.inte.business.model.User;
+import com.weaver.inte.utils.StringUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

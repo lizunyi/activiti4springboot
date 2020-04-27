@@ -9,10 +9,10 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.weaver.inte.activity.utils.StringUtils;
 import com.weaver.inte.business.mapper.LeaveApplyMapper;
 import com.weaver.inte.business.model.LeaveApply;
 import com.weaver.inte.business.service.LeaveApplyService;
+import com.weaver.inte.utils.StringUtils;
 
 @Transactional
 @Service("business.leave")

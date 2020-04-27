@@ -99,6 +99,17 @@
 		</dependency>
 		
 		
+		<dependency>
+			  <groupId>com.weaver</groupId>
+			  <artifactId>inte.sql</artifactId>
+			  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			  <groupId>com.weaver</groupId>
+			  <artifactId>inte.utils</artifactId>
+			  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
