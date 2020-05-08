@@ -92,12 +92,6 @@
 			<artifactId>batik-codec</artifactId>
 			<version>1.7</version>
 		</dependency>
-		<dependency>
-			<groupId>com.weaver</groupId>
-			<artifactId>inte.activity.api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
 		
 		<dependency>
 			  <groupId>com.weaver</groupId>
