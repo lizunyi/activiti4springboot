@@ -7,9 +7,9 @@ import tk.mybatis.mapper.common.special.InsertUseGeneratedKeysMapper;
 /**
  * @description 
  * @author lzy
- * @date:2020年4月26日 下午1:09:46
+ * @date:2020年5月27日 上午10:55:40
  * @version v1.0
  */
-public interface BaseMapper<T> extends Mapper<T>, InsertUseGeneratedKeysMapper<T>, InsertListMapper<T> {
+public interface MyBaseMapper<T> extends Mapper<T>, InsertUseGeneratedKeysMapper<T>, InsertListMapper<T> {
 
 }

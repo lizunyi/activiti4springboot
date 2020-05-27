@@ -3,9 +3,9 @@ package com.weaver.inte.business.service.impl;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.weaver.inte.business.mapper.LeaveApplyMapper;
 import com.weaver.inte.business.service.SaleService;
@@ -19,7 +19,7 @@ public class SaleServiceImpl implements SaleService {
 
 	@Override
 	public long apply(Map<String, Object> formRecord) throws Exception {
-		return 1;
+		return 1;	
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 
-import com.weaver.inte.activity.model.ActApplyModel;
 import com.weaver.inte.activity.model.ActDoneModel;
 import com.weaver.inte.activity.model.ActRuTask;
 import com.weaver.inte.activity.sqlprovider.SqlPrivoder;

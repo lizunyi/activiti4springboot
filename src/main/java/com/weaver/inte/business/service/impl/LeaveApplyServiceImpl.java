@@ -3,10 +3,10 @@ package com.weaver.inte.business.service.impl;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.weaver.inte.business.mapper.LeaveApplyMapper;
